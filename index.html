@@ -11,22 +11,22 @@
 
     <div id="gameBoard" class="board">
       
-      <div id=""> <!-- gameProperties--hidden"> -->
-        <form id="gamePropertiesForm" class="gameProperties">
+      <div class="gameProperties">
+        <form id="gamePropertiesForm" class="gameProperties__Form">
 
           <div class="level">
             <div class="level__input">
-              <input type="radio" name="level" value="easy"> 
+              <input type="radio" name="level" value="6"> 
               <div>Easy</div>
             </div>
             
             <div class="level__input">
-              <input type="radio" name="level" value="regular"> 
+              <input type="radio" name="level" value="10"> 
               <div>Regular</div>
             </div>
             
             <div class="level__input">
-              <input type="radio" name="level" value="hard"> 
+              <input type="radio" name="level" value="15"> 
               <div>Hard</div>
             </div>
           </div>
@@ -63,7 +63,7 @@
           </button>
       </div>
 
-      <div id="gamestatus" class="status status--hidden">
+      <div id="gamestatus" class="gameStatus--hidden">
         <div> remaining cards </div>
         <div> mistakes </div>
         <div> deck </div>

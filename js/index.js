@@ -512,33 +512,60 @@ var gameData = {
 function initializeGame(){
 	let form = document.getElementById("gamePropertiesForm");
 	let gameParameters = parseForm(form);
+
+	hideGameProperties();
+	showGameStatus();
+		
 	createGameDeck(gameParameters);
+}
+
+function hideGameProperties(){
+	let gameInitializer = document.getElementById("gamePropertiesForm");
+	gameInitializer.classList.add("gameProperties__form--hidden");
+}
+
+function showGameProperties(){
+	let gameInitializer = document.getElementById("gamePropertiesForm");
+	gameInitializer.classList.remove("gameProperties__form--hidden");
+}
+
+function hideGameStatus(){
+	let gameInitializer = document.getElementById("gamestatus");
+	gameInitializer.classList.add("gameStatus--hidden");
+}
+
+function showGameStatus(){
+	let gameInitializer = document.getElementById("gamestatus");
+	gameInitializer.classList.remove("gameStatus--hidden");
+}
+
+
+
+function getLevelFromString(level){
+	if (level == undefined || level == ""){
+		return 6;
+		return gameProperties.level.easy.deckSize;
+	} else {
+		return parseInt(level);
+	}
+}
+
+function getDeckFromName(deckName){
+	switch(deckName){
+		case "education":
+			return educationDeck;
+		case "landscaping":
+		default:
+			return landscapingDeck;
+	}
 }
 
 function parseForm(form){
 	let gameParameters = {};
-	switch (form.elements.level.value){
-		case "regular":
-			gameParameters.level = 10;
-			break;
-		case "easy":
-			gameParameters.level = 6;
-			break;
-		case "hard":
-			gameParameters.level = 15;
-			break;
-		default:
-			gameParameters.level = 10;
-	}
-
-	switch(form.elements.deck.value){
-		case "landscaping":
-			gameParameters.deck = landscapingDeck;
-			break;
-		case "education":
-			gameParameters.deck = educationDeck;
-			break;
-	}
+	
+	gameParameters.level = getLevelFromString(form.elements.level.value);
+	gameParameters.deck = getDeckFromName(form.elements.deck.value);
+	
 	gameParameters.mode = form.elements.mode.value;
 	return gameParameters;
 }
@@ -552,11 +579,36 @@ function nextGameState(card){
 		if (areCurrentCardsTheSame()){
 			decreaseRemainingCards();
 			updateCorrectCardsChosen();
+			handleGameOver(isGameOver());
 		} else {
 			increaseGameMistakes()
 			updateWrongCardsChosen();
 		}
 	}
+}
+
+function handleGameOver(isGameOver){
+	if (isGameOver){
+		setTimeout(removeDeck, 2400);
+		setTimeout(showGameProperties, 3400);
+		setTimeout(hideGameStatus, 3400);
+		resetGameData();
+	}
+}
+
+function resetGameData(){
+	gamedata ={
+		card1: null,
+		card2: null,
+		mistakes: 0,
+		cardsFlipped: 0,
+		remainingCards: -1
+	}
+}
+
+function isGameOver(){
+
+	return gameData.remainingCards === 0;
 }
 
 function decreaseRemainingCards(){
@@ -690,11 +742,11 @@ function createBackFaceImage(cardProperties){
 function getDOMDeck(){
 	let DOMdeck = document.getElementById("cardDeck");
 
-	if(DOMdeck == undefined){
-		return createDOMDeck();	
-	} else {
-		return DOMdeck;
+	if (DOMdeck != undefined){
+		removeDeck();
 	}
+
+	return createDOMDeck()
 }
 
 function createDOMDeck(){

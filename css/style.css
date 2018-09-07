@@ -112,20 +112,20 @@
   transform: rotateY(180deg);
 }
 
-.gameProperties {
+.gameProperties__form {
   display: flex;
   width: 100%;
   justify-content: space-evenly;
   flex-direction: row;
 
 }
-.gameProperties--hidden{
+.gameProperties__form--hidden{
   display: none;
 }
 .status {
   display: flex;
 }
-.status--hidden{
+.gameStatus--hidden{
   display: none;
 }
 
