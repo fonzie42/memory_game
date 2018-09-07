@@ -1,0 +1,83 @@
+<html lang="en" >
+  <head>
+    <meta charset="UTF-8">
+    <title>Memory Tarot</title>   
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+    <div id="gameBoard" class="board">
+      
+      <div id=""> <!-- gameProperties--hidden"> -->
+        <form id="gamePropertiesForm" class="gameProperties">
+
+          <div class="level">
+            <div class="level__input">
+              <input type="radio" name="level" value="easy"> 
+              <div>Easy</div>
+            </div>
+            
+            <div class="level__input">
+              <input type="radio" name="level" value="regular"> 
+              <div>Regular</div>
+            </div>
+            
+            <div class="level__input">
+              <input type="radio" name="level" value="hard"> 
+              <div>Hard</div>
+            </div>
+          </div>
+
+          <div class="deckform">
+            <div class="deckform__input">
+              <input type="radio" name="deck" value="education">
+              <div>Back to School</div>
+            </div>
+
+            <div class="deckform__input">
+              <input type="radio" name="deck" value="landscaping">
+              <div>LandScaping</div>
+            </div>
+
+          </div>
+
+          <div class="mode">
+            <div class="mode__input">
+              <input type="radio" name="mode" value="solo">
+              <div>Solo</div>
+            </div>
+
+            <div class="mode__input">
+              <input type="radio" name="mode" value="twoPlayers">
+              <div>TwoPlayers</div>
+            </div>
+          </div>
+
+        </form>
+
+          <button onclick="initializeGame()">
+              Let's do it
+          </button>
+      </div>
+
+      <div id="gamestatus" class="status status--hidden">
+        <div> remaining cards </div>
+        <div> mistakes </div>
+        <div> deck </div>
+        <div> level </div>
+        <div> score </div>
+        <div> mode </div>
+      </div>
+
+      
+    </div>
+
+    <div id="cardTable">
+      
+    </div>
+    <script  src="js/index.js"></script>
+  </body>
+</html>

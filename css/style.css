@@ -1,0 +1,175 @@
+.deck{
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.card__face--disabled{
+  opacity: .5;
+}
+
+.card{
+  display: flex;
+  height: 180px;
+  width: 120px;
+  margin: 10px;
+  border-radius: 8px;
+  position: relative;
+      transition: transform 1s;
+    transform-style: preserve-3d;
+}
+
+.card__face{
+  border: 4px solid rgba(65,65,65,1);
+  border-radius: 8px;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  backface-visibility: hidden;
+}
+
+.card__face--backgroundLED{
+  background: url("../images/deckBackground/led-lamp.svg") no-repeat center;
+  background-size: auto;
+}
+
+.card__face--backgroundWorld{
+  background: url("../images/deckBackground/world.svg") no-repeat center;
+  background-size: auto;
+}
+
+.card__face--backgroundYellow{
+  background-color: rgba(255, 255, 175, 1);
+}
+
+.card__face--backgroundBlue{
+  background-color: rgba(171, 231, 251, 1);
+}
+
+.card__face--backgroundGreen{
+  background-color: rgba(131, 209, 84, 1);
+}
+
+.card__face--backgroundPurple{
+  background-color: rgba(128, 131, 207, 1);
+}
+
+.card__face--backgroundRed{
+  background-color: rgba(172, 87 , 120, 1);
+}
+
+.card__face--backgroundGray{
+  background-color: rgba(245, 245, 245, 1);
+}
+
+.card__title--Yellow{
+  color: rgba(155, 155, 75, 1);
+}
+
+.card__title--Blue{
+  color: rgba(71, 131, 151, 1);
+}
+
+.card__title--Green{
+  color: rgba(31, 109, 0, 1);
+}
+
+.card__title--Purple{
+  color: rgba(28, 31, 107, 1);
+}
+
+.card__title--Red{
+  color: rgba(72, 0 , 20, 1);
+}
+
+.card__title--Gray{
+  color: rgba(145, 145, 145, 1);
+}
+
+.card__face--front{
+}
+
+.card__face--back{
+  transform: rotateY(180deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.card__title{
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+}
+
+.card__face--back img {
+  max-width: 88%;
+  max-height: 88%;
+}
+
+.flippedCard {
+  transform: rotateY(180deg);
+}
+
+.gameProperties {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  flex-direction: row;
+
+}
+.gameProperties--hidden{
+  display: none;
+}
+.status {
+  display: flex;
+}
+.status--hidden{
+  display: none;
+}
+
+.gameProperties__level{
+  display: flex;
+  flex-direction: column;
+}
+
+.gameProperties__deck{
+  display: flex;
+  flex-direction: column;
+}
+
+.gameProperties__mode{
+  display: flex;
+  flex-direction: column;
+}
+
+.level{
+  display: flex;
+  flex-direction: column;
+}
+.level__input{
+  display: flex;
+  flex-direction: row;
+}
+
+.deckform{
+  display: flex;
+  flex-direction: column;
+}
+
+.deckform__input{
+  display: flex;
+  flex-direction: row;
+}
+
+.mode{
+  display: flex;
+  flex-direction: column;
+}
+
+.mode__input{
+  display: flex;
+  flex-direction: row;
+}
+
