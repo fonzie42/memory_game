@@ -139,7 +139,7 @@
   flex-direction: column;
 }
 
-.gameProperties__mode{
+.gameProperties__players{
   display: flex;
   flex-direction: column;
 }
@@ -163,12 +163,12 @@
   flex-direction: row;
 }
 
-.mode{
+.players{
   display: flex;
   flex-direction: column;
 }
 
-.mode__input{
+.players__input{
   display: flex;
   flex-direction: row;
 }

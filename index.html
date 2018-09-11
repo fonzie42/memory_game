@@ -44,14 +44,14 @@
 
           </div>
 
-          <div class="mode">
-            <div class="mode__input">
-              <input type="radio" name="mode" value="solo">
+          <div class="players">
+            <div class="players__input">
+              <input type="radio" name="players" value="solo">
               <div>Solo</div>
             </div>
 
-            <div class="mode__input">
-              <input type="radio" name="mode" value="twoPlayers">
+            <div class="players__input">
+              <input type="radio" name="players" value="twoPlayers">
               <div>TwoPlayers</div>
             </div>
           </div>
@@ -64,12 +64,16 @@
       </div>
 
       <div id="gamestatus" class="gameStatus--hidden">
-        <div> remaining cards </div>
-        <div> mistakes </div>
-        <div> deck </div>
-        <div> level </div>
-        <div> score </div>
-        <div> mode </div>
+        <div> remaining cards <div id="remainingCardsInfo"></div></div>
+        <div>mistakes <div id="mistakesInfo"></div></div>
+        <div>deck <div id="deckInfo"></div></div>
+        <div>level <div id="levelInfo"></div></div>
+        <div>score <div id="scoreInfo"></div></div>
+        <div>mode <div id="modeInfo"></div></div>
+        <div> mistakes player 1<div id="mistakesPlayer1"></div></div>
+        <div> correct pairs player 1<div id="correctPairs1"></div></div>
+        <div> mistakes player 2<div id="mistakesPlayer2"></div></div>
+        <div> correct pairs player 2<div id="correctPairs2"></div></div>
       </div>
 
       

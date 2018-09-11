@@ -473,50 +473,88 @@ const educationCards = [
 ];
 
 const landscapingDeck = {
-	deckSize: 28,
+	deckSize: landscapingCards.length,
 	deckFrontStyle: "",
 	cards: landscapingCards
 }
 
 const educationDeck = {
-	deckSize: 50,
+	deckSize: educationCards.length,
 	deckFrontStyle: "",
 	cards: educationCards
 }
 
 const gameProperties = {
-	level: {
-		easy: {
-			deckSize: 6
-		},
+	levelDeckSize: {
+		easy: 6,
+		regular: 10,
+		hard: 15
+	},
 
-		regular: {
-			deckSize: 10
-		},
-
-		hard: {
-			deckSize: 15
-		}
+	gameInfoIds: {
+		remainingCards: "remainingCardsInfo", 
+		mistakes: "mistakesInfo", 
+		deck: "deckInfo", 
+		level: "levelInfo", 
+		score: "scoreInfo",
+		players: "playersInfo"
 	}
 }
 
-var gameData = {
-	// @TODO change the card to an array of current cards, from 2 to n
-	card1: null,
-	card2: null,
-	mistakes: 0,
-	cardsFlipped: 0,
-	remainingCards: -1
-} 
+var gameData = getDefaultGameData();
+
+function getDefaultGameData(){
+	return {
+		cards: [],
+		cardAmount: 2,
+		currentCard: 0,
+		mistakes: 0,
+		cardsFlipped: 0,
+		remainingCards: -1,
+		currentPlayer: 0,
+		players: []
+	};
+}
+
+function handleNextPlayer(){
+	if (currentPlayer === gameData.players - 1 ){
+		gameData.currentPlayer = 0;
+	} else {
+		gameData.currentPlayer++;
+	}
+}
 
 function initializeGame(){
+	//@TODO IMPROVE
 	let form = document.getElementById("gamePropertiesForm");
 	let gameParameters = parseForm(form);
 
 	hideGameProperties();
 	showGameStatus();
-		
+	
+	initializePlayers(gameParameters.players);
+	createPlayersInfo(gameData.players);
 	createGameDeck(gameParameters);
+}
+
+function createPlayersInfo(players){
+	//@TODO IMPROVE
+	// create dom stuf regarding players
+}
+
+function initializePlayers(playersAmount){
+	for (let i=0; i < playersAmount; i++){
+		let player = createPlayer(i+1);
+		gameData.players.push(player);
+	}
+}
+
+function createPlayer(i){
+	return {
+		identifier: i,
+		mistakes: 0,
+		success: 0	
+	};
 }
 
 function hideGameProperties(){
@@ -539,12 +577,9 @@ function showGameStatus(){
 	gameInitializer.classList.remove("gameStatus--hidden");
 }
 
-
-
 function getLevelFromString(level){
-	if (level == undefined || level == ""){
-		return 6;
-		return gameProperties.level.easy.deckSize;
+	if (!level || typeof level !== "string"){
+		return gameProperties.levelDeckSize.regular;
 	} else {
 		return parseInt(level);
 	}
@@ -561,49 +596,88 @@ function getDeckFromName(deckName){
 }
 
 function parseForm(form){
-	let gameParameters = {};
+	const gameParameters = {
+		level : getLevelFromString(form.elements.level.value),
+		deck : getDeckFromName(form.elements.deck.value),
+		players : form.elements.players.value
+	};
 	
-	gameParameters.level = getLevelFromString(form.elements.level.value);
-	gameParameters.deck = getDeckFromName(form.elements.deck.value);
-	
-	gameParameters.mode = form.elements.mode.value;
 	return gameParameters;
 }
 
 function nextGameState(card){
-	// @TODO more generic logic here
-	if (gameData.card1 == null) {
-		gameData.card1 = card;
-	} else {
-		gameData.card2 = card;
+	gameData.cards[gameData.currentCard] = card;
+	increaseCurrentCard();
+
+	if (isCurrentCardReset()){
 		if (areCurrentCardsTheSame()){
-			decreaseRemainingCards();
-			updateCorrectCardsChosen();
-			handleGameOver(isGameOver());
+			handleCorrectCards();
 		} else {
-			increaseGameMistakes()
-			updateWrongCardsChosen();
+			handleWrongCards();
 		}
 	}
 }
 
-function handleGameOver(isGameOver){
-	if (isGameOver){
-		setTimeout(removeDeck, 2400);
-		setTimeout(showGameProperties, 3400);
-		setTimeout(hideGameStatus, 3400);
-		resetGameData();
+function isCurrentCardReset(){
+
+	return gameData.currentCard === 0;
+}
+
+function increaseCurrentCard(){
+	if (gameData.currentCard === gameData.cardAmount - 1){
+		gameData.currentCard = 0;		
+	} else {
+		gameData.currentCard = gameData.currentCard + 1;
 	}
 }
 
+function handleCorrectCards(){
+	decreaseRemainingCards();
+	updateCorrectCardsChosen();
+	handleGameOver(isGameOver());
+}
+
+function handleWrongCards(){
+	increaseGameMistakes();
+	updateDOMInfo();
+	updateWrongCardsChosen();
+}
+
+function handleGameOver(isGameOver){
+	if (!isGameOver){return;}
+	
+	setTimeout(resetGameSpace, 3400);
+	resetData();
+}
+
+function resetGameSpace(){
+	removeDeck();
+	showGameProperties();
+	hideGameStatus();
+}
+
+function resetData(){	
+	resetGameData();
+	resetDOMData();
+}
+
 function resetGameData(){
-	gamedata ={
-		card1: null,
-		card2: null,
-		mistakes: 0,
-		cardsFlipped: 0,
-		remainingCards: -1
+
+	gameData = getDefaultGameData();
+}
+
+function resetDOMData(){
+	let gameInfoIds = gameProperties.gameInfoIds;
+	for (let DOMelement in gameInfoIds) {
+	    if (gameInfoIds.hasOwnProperty(DOMelement)) {
+	    	resetTextById(gameInfoIds[DOMelement]);
+	    }
 	}
+}
+
+function resetTextById(DOMId){
+	let element = document.getElementById(DOMId);
+	element.textContent = "";
 }
 
 function isGameOver(){
@@ -613,12 +687,18 @@ function isGameOver(){
 
 function decreaseRemainingCards(){
 
-	gameData.remainingCards = gameData.remainingCards-2;
+	gameData.remainingCards = gameData.remainingCards- gameData.cardAmount;
 }
 
 function increaseGameMistakes(){
 
 	gameData.mistakes++;
+}
+
+function updateDOMInfo(){
+	//@TODO IMPROVE
+	let DOMmistakes = document.getElementById("mistakesInfo");
+	DOMmistakes.textContent = gameData.mistakes;
 }
 
 function getCardIdentifier(card){
@@ -627,62 +707,71 @@ function getCardIdentifier(card){
 }
 
 function areCurrentCardsTheSame (){
-	//@TODO more generic logic here
-	let cardIdentifier1 = getCardIdentifier(gameData.card1);
-	    cardIdentifier2 = getCardIdentifier(gameData.card2);
-	if (cardIdentifier1 === cardIdentifier2){
-		return true;
-	} else {
-		return false;
+	let differenceInCards = 0;
+	const cards = gameData.cards;
+	for (let i=1; i <= gameData.cardAmount - 1; i++){
+		if (getCardIdentifier(cards[i-1]) !== getCardIdentifier(cards[i])){
+			differenceInCards++;
+		}
 	}
+
+	return differenceInCards === 0;
 }
 
-function getCardImage(card){
+function getCardBackFace(card){
 
 	return card.lastChild;
 }
 
 function updateCorrectCardsChosen(){
-	// @TODO more generic logic here
-	let card1Image = getCardImage(gameData.card1);
-		card2Image = getCardImage(gameData.card2);
-	setTimeout(updateBackFaceStyle.bind(null, card1Image, card2Image), 1000);
+	let cardBackFaces = [],
+		cards = gameData.cards;
+	for (let i=0; i < gameData.cardAmount; i++){
+		let backFace = getCardBackFace(cards[i]);
+		cardBackFaces.push(backFace);
+	}
+
+	setTimeout(updateBackFaceStyle(cardBackFaces), 1000);
 	disableCurrentCards();
 	removeCurrentCardsInfo();
 }
 
 function disableCurrentCards(){
-	// @TODO more generic logic here
-	gameData.card1.removeEventListener("click", updateGame);
-	gameData.card2.removeEventListener("click", updateGame);
+	let cards = gameData.cards;
+	for (let i=0; i < gameData.cardAmount; i++){
+		cards[i].removeEventListener("click", startRound);
+	}
 }
 
-function updateBackFaceStyle(cardBackFace1, cardBackFace2){
-	// @TODO more generic logic here
-	cardBackFace1.classList.add("card__face--disabled");
-	cardBackFace2.classList.add("card__face--disabled");
+function updateBackFaceStyle(cardBackFaces){
+	return function (){
+		for (let i=0; i < cardBackFaces.length; i++){
+			cardBackFaces[i].classList.add("card__face--disabled");
+		}
+	}
 }
 
 function updateWrongCardsChosen(){
-	// @TODO more generic logic here
-	setTimeout(unflipCurrentCards.bind(null, gameData.card1, gameData.card2), 1000);
+	setTimeout(unflipCurrentCards(gameData.cards), 1000);
 	removeCurrentCardsInfo();
 }
 
-function unflipCurrentCards(card1, card2){
-	// @TODO more generic logic here
-	card1.classList.toggle('flippedCard');
-	card2.classList.toggle('flippedCard');
+function unflipCurrentCards(cards){
+	return function(){
+		for (let i=0; i < cards.length; i++){
+			cards[i].classList.toggle('flippedCard');
+		}
+	}
 }
 
 function removeCurrentCardsInfo(){
-	// @TODO more generic logic here
-	gameData.card1 = null;
-	gameData.card2 = null;
+
+	gameData.cards = [];
 }
 
-function updateGame(){
-	if (!this.classList.contains("flippedCard")) {
+function startRound(){
+	let isCardAlreadyFliped = !this.classList.contains("flippedCard");
+	if (isCardAlreadyFliped) {
     	this.classList.toggle('flippedCard');
     	gameData.cardsFlipped++;
     	nextGameState(this);
@@ -690,11 +779,12 @@ function updateGame(){
 }
 
 function createCard(cardProperties){
+	//@TODO IMPROVE
 	let card = document.createElement("DIV");
 	card.classList.add("card");	
 	card.setAttribute("data-cardidentifier",cardProperties.cardIdentifier);
 
-	card.addEventListener( 'click', updateGame);  
+	card.addEventListener( 'click', startRound);  
 	
 	let cardFront = createFrontFace();
 	card.appendChild(cardFront);
@@ -706,6 +796,7 @@ function createCard(cardProperties){
 }
 
 function createFrontFace(){
+	//@TODO IMPROVE
 	let frontFace = document.createElement("DIV");
 	frontFace.classList.add("card__face");
 	frontFace.classList.add("card__face--front");
@@ -715,6 +806,7 @@ function createFrontFace(){
 }
 
 function createBackFace(cardProperties){
+	//@TODO IMPROVE
 	let backFace = document.createElement("DIV");
 
 	backFace.classList.add("card__face");
@@ -734,13 +826,15 @@ function createBackFace(cardProperties){
 }
 
 function createBackFaceImage(cardProperties){
+	//@TODO IMPROVE
 	let backFaceImage = document.createElement("IMG");
 	backFaceImage.src=cardProperties.image;
 	return backFaceImage;
 }
 
 function getDOMDeck(){
-	let DOMdeck = document.getElementById("cardDeck");
+	//@TODO IMPROVE
+	const DOMdeck = document.getElementById("cardDeck");
 
 	if (DOMdeck != undefined){
 		removeDeck();
@@ -750,6 +844,7 @@ function getDOMDeck(){
 }
 
 function createDOMDeck(){
+	//@TODO IMPROVE
 	let DOMTable = document.getElementById("cardTable");
 	let DOMdeck = document.createElement("DIV");
 	DOMdeck.classList.add("deck");
@@ -758,18 +853,26 @@ function createDOMDeck(){
 	return DOMdeck;
 }
 
+
+
+
+/// REFAZER
+
+
 function createGameDeck(gameProperties){
+	//@TODO IMPROVE
 	let deck = gameProperties.deck,
 	    gameDeckSize = gameProperties.level;
 
 	let DOMdeck = getDOMDeck();
 
 	if (gameDeckSize == undefined || gameDeckSize > deck.deckSize){
-		gameDeckSize = gameProperties.level.regular.deckSize;
+		gameDeckSize = gameProperties.levelDeckSize.regular;
 	}
 
 	let cardsStyles = generatePositionsArray(deck.deckSize);
 	cardsStyles = shuffle(cardsStyles);
+	
 	let gameDeck = [];
 	let j = 0;
 	for (let i = 0; i < gameDeckSize; i++){
@@ -787,11 +890,13 @@ function createGameDeck(gameProperties){
 }
 
 function removeDeck(){
+	//@TODO IMPROVE
 	let DOMdeck = document.getElementById("cardDeck");
 	DOMdeck.remove();	
 }
 
 function generatePositionsArray(size){
+	//@TODO IMPROVE
 	let positionsArray = new Array(size);
 	for (let i = 0; i < size; i++){
 		positionsArray[i] = i;
@@ -800,7 +905,8 @@ function generatePositionsArray(size){
 }
 
 function shuffle(array){
-	var currentIndex = array.length, temporaryValue, randomIndex;
+	//@TODO IMPROVE
+	let currentIndex = array.length, temporaryValue, randomIndex;
 
 	while (0 !== currentIndex) {
 		randomIndex = Math.floor(Math.random() * currentIndex);
@@ -816,7 +922,8 @@ function isCardDisabled(card){
 	if (card == undefined){
 		return undefined;
 	} else {
-		return card.lastChild.classList.contains("card__face--disabled");
+		let backFace = getCardBackFace(card);
+		return backFace.classList.contains("card__face--disabled");
 	}
 }
 
@@ -824,16 +931,33 @@ function isCardPlayerFlipped(card){
 	if (card == undefined){
 		return undefined;
 	} else {
-		return (card.classList.contains("flippedCard") && (card === gameData.card1));
+		let isCardFlipped = card.classList.contains("flippedCard"),
+			isInCurrentCardsList = isCardInGameData(card);
+		return (isCardFlipped && isInCurrentCardsList);
 	}
 }
 
+function isCardInGameData(card){
+	let isCardInList = false,
+		cards = gameData.cards,
+		i=0;
+	while (i < gameData.cardAmount && !isCardInList){
+		if (cards[i] === card){
+			isCardInList = true;
+		} else {
+			i++;
+		}
+	}
+
+	return isCardInList;
+}
+
 function _flipAllAvailableCards(){
-	var cards = document.getElementsByClassName("card");
-	for (var i = 0; i < cards.length; i++) {
+	//@TODO IMPROVE
+	let cards = document.getElementsByClassName("card");
+	for (let i = 0; i < cards.length; i++) {
 		if (!isCardDisabled(cards[i]) && !isCardPlayerFlipped(cards[i])){
 		  cards[i].classList.toggle('flippedCard');	
 		}
 	}
-	removeCurrentCardsInfo();
 }
