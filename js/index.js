@@ -502,7 +502,7 @@ const gameDefaultProperties = {
 
 const gameIds = {
     gameInfoIds: {
-        container: "gamestatus",
+        container: "gamestatuscontainer",
         remainingCards: "remainingCardsInfo", 
         mistakes: "mistakesInfo", 
         deck: "deckInfo", 

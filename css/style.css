@@ -125,9 +125,6 @@
 .status {
   display: flex;
 }
-.gameStatus--hidden{
-  display: none;
-}
 
 .gameProperties__level{
   display: flex;
@@ -163,13 +160,29 @@
   flex-direction: row;
 }
 
-.players{
+.gameStatus{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.gameStatus--hidden{
+  display: none;
 }
 
 .players__input{
   display: flex;
   flex-direction: row;
 }
+
+.playerCard{
+  text-align: center;
+  min-width: 240px;
+  padding: 15px;
+  border: 2px solid;
+  margin: 5px;
+}
+
+
 
