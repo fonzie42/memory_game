@@ -15,8 +15,8 @@
   margin: 10px;
   border-radius: 8px;
   position: relative;
-      transition: transform 1s;
-    transform-style: preserve-3d;
+  transition: transform 1s;
+  transform-style: preserve-3d;
 }
 
 .card__face{
@@ -34,7 +34,7 @@
   background-size: auto;
 }
 
-.card__face--backgroundWorld{
+.card__face--backgroundStandard{
   background: url("../images/deckBackground/world.svg") no-repeat center;
   background-size: auto;
 }
