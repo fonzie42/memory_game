@@ -1,6 +1,6 @@
 .deck{
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
@@ -29,13 +29,8 @@
   backface-visibility: hidden;
 }
 
-.card__face--backgroundLED{
-  background: url("../images/deckBackground/led-lamp.svg") no-repeat center;
-  background-size: auto;
-}
-
 .card__face--backgroundStandard{
-  background: url("../images/deckBackground/world.svg") no-repeat center;
+  background: url("../images/deckBackground/question.svg") no-repeat center;
   background-size: auto;
 }
 
@@ -45,6 +40,10 @@
 
 .card__face--backgroundBlue{
   background-color: rgba(171, 231, 251, 1);
+}
+
+.card__face--backgroundDarkBlue{
+  background-color: rgba(71, 131, 151, 1);
 }
 
 .card__face--backgroundGreen{
@@ -69,6 +68,10 @@
 
 .card__title--Blue{
   color: rgba(71, 131, 151, 1);
+}
+
+.card__title--DarkBlue{
+  color: rgba(221, 254, 254, 1);
 }
 
 .card__title--Green{
@@ -150,12 +153,12 @@
   flex-direction: row;
 }
 
-.deckform{
+.form{
   display: flex;
   flex-direction: column;
 }
 
-.deckform__input{
+.form__input{
   display: flex;
   flex-direction: row;
 }
@@ -177,12 +180,13 @@
 }
 
 .playerCard{
+  background-color: rgba(240,240,240,1);
+  font-family: 'Montserrat', sans-serif;
   text-align: center;
   min-width: 240px;
-  padding: 15px;
-  border: 2px solid;
   margin: 5px;
 }
 
-
-
+.playerCard--active{
+  box-shadow: 0 0 25px rgba(0,0,0,.5);
+}

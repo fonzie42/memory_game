@@ -14,88 +14,151 @@
       <div class="gameProperties">
         <form id="gamePropertiesForm" class="gameProperties__Form">
 
-          <div class="level">
-            <div class="level__input">
-              <input type="radio" name="level" value="6"> 
-              <div>Easy</div>
+          <div class="form">
+            <div class="form__input">
+              <label>
+                <input type="radio" name="level" value="6"> Easy
+              </label>
             </div>
             
-            <div class="level__input">
-              <input type="radio" name="level" value="10"> 
-              <div>Regular</div>
+            <div class="form__input">
+              <label>
+                <input type="radio" name="level" value="10"> Regular
+              </label>
             </div>
             
-            <div class="level__input">
-              <input type="radio" name="level" value="15"> 
-              <div>Hard</div>
+            <div class="form__input">
+              <label>
+                <input type="radio" name="level" value="15"> Hard
+              </label>
             </div>
           </div>
 
-          <div class="deckform">
-            <div class="deckform__input">
-              <input type="radio" name="deck" value="education">
-              <div>Back to School</div>
+          <div class="form">
+            <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="education"> Back to School
+              </label>
             </div>
 
-            <div class="deckform__input">
-              <input type="radio" name="deck" value="landscaping">
-              <div>LandScaping</div>
+            <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="landscaping"> LandScaping
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="astronomy"> astronomy
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="business"> business
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="ecology"> ecology
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="education2"> education2
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="files"> files
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="flags"> flags
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="gastronomy"> gastronomy
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="household"> household
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="kids"> kids
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="magic"> magic
+              </label>
+            </div>
+
+             <div class="form__input">
+              <label>
+                <input type="radio" name="deck" value="pokemonGo"> pokemonGo
+              </label>
             </div>
 
           </div>
 
-          <div class="players">
-            <div class="players__input">
-              <input type="radio" name="players" value="solo">
-              <div>Solo</div>
+          <div class="form">
+            <div class="form__input">
+              <label>
+                <input type="radio" name="players" value="1"> Solo
+              </label>
             </div>
 
-            <div class="players__input">
-              <input type="radio" name="players" value="twoPlayers">
-              <div>Two Players</div>
+            <div class="form__input">
+              <label>
+                <input type="radio" name="players" value="2"> Two Players
+              </label>
             </div>
           </div>
 
-          <div class="modifier">
-            <div class="modifier__input">
-              <input type="radio" name="cardAmount" value="regular">
-              <div>Pairs</div>
+          <div class="form">
+            <div class="form__input">
+              <label>
+                <input type="radio" name="cardAmount" value="regular"> Pairs
+              </label>
             </div>
 
-            <div class="modifier__input">
-              <input type="radio" name="cardAmount" value="hard">
-              <div>Trios</div>
+            <div class="form__input">
+              <label>
+                <input type="radio" name="cardAmount" value="hard"> Trios
+              </label>
             </div>
 
-            <div class="modifier__input">
-              <input type="radio" name="cardAmount" value="veryHard">
-              <div>Quadruples</div>
+            <div class="form__input">
+              <label>
+                <input type="radio" name="cardAmount" value="veryHard"> Quadruples
+              </label>
             </div>
           </div>
+
+          <button type="button" onclick="initializeGame()">
+              Let's do it
+          </button>
 
         </form>
 
-          <button onclick="initializeGame()">
-              Let's do it
-          </button>
+          
       </div>
 
       <div id="gamestatuscontainer" class="gameStatus gameStatus--hidden">
-        
-
-
-        <div>
-          <div>Total remaining cards <div id="remainingCardsInfo"></div></div>
-          <div>Total Mistakes <div id="mistakesInfo"></div></div>
-          <div>Current Level <div id="levelInfo"></div></div>
-          <div>Current Mode <div id="modeInfo"></div></div>  
-        </div>
-
-        <div class="playerCard">
-          <h1>Player</h1>
-          <p>Mistakes: 3123</p> 
-          <p>Successes: 3123</p> 
-        </div>
 
       </div>    
 
@@ -104,6 +167,20 @@
     <div id="cardTable">
       
     </div>
+    <script  src="js/astronomy.js"></script>
+    <script  src="js/business.js"></script>
+    <script  src="js/ecology.js"></script>
+    <script  src="js/education.js"></script>
+    <script  src="js/education2.js"></script>
+    <script  src="js/files.js"></script>
+    <script  src="js/flags.js"></script>
+    <script  src="js/gastronomy.js"></script>
+    <script  src="js/household.js"></script>
+    <script  src="js/kids.js"></script>
+    <script  src="js/landscaping.js"></script>
+    <script  src="js/magic.js"></script>
+    <script  src="js/pokemonGo.js"></script>
+    <script  src="js/cardsAndDecks.js"></script>
     <script  src="js/index.js"></script>
   </body>
 </html>

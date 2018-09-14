@@ -1,489 +1,3 @@
-const landscapingCards = [
-    {
-        image: "images/landscaping/beach.svg", 
-        cardTitle: "The Beach",
-        cardIdentifier: "beach",
-        backgroundColor: "Blue"
-    },
-    {
-        image: "images/landscaping/bridge.svg", 
-        cardTitle: "The Great Bridge",
-        cardIdentifier: "bridge",
-        backgroundColor: "Purple"
-    },
-    {
-        image: "images/landscaping/cape.svg", 
-        cardTitle: "Cherry Blossom",
-        cardIdentifier: "cherryblossom",
-        backgroundColor: "Red"
-    },
-    {
-        image: "images/landscaping/castle.svg", 
-        cardTitle: "Old Castle",
-        cardIdentifier: "castle",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/cityscape.svg", 
-        cardTitle: "Distant City",
-        cardIdentifier: "city",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/desert-1.svg", 
-        cardTitle: "Desert Mountains",
-        cardIdentifier: "desert1",
-        backgroundColor: "Yellow"
-    },
-    {
-        image: "images/landscaping/desert.svg", 
-        cardTitle: "Conquered Desert",
-        cardIdentifier: "desert2",
-        backgroundColor: "Yellow"
-    },
-    {
-        image: "images/landscaping/fields-1.svg", 
-        cardTitle: "Fields",
-        cardIdentifier: "fields1",
-        backgroundColor: "Yellow"
-    },
-    {
-        image: "images/landscaping/fields.svg", 
-        cardTitle: "Flower Fields",
-        cardIdentifier: "fields2",
-        backgroundColor: "Blue"
-    },
-    {
-        image: "images/landscaping/forest.svg", 
-        cardTitle: "The Forest",
-        cardIdentifier: "forest1",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/hills.svg", 
-        cardTitle: "Forest Hills",
-        cardIdentifier: "forest2",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/home-1.svg", 
-        cardTitle: "Sunny House",
-        cardIdentifier: "house",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/home.svg", 
-        cardTitle: "Distant Home",
-        cardIdentifier: "house",
-        backgroundColor: "Yellow"
-    },
-    {
-        image: "images/landscaping/iceberg.svg", 
-        cardTitle: "Iceberg",
-        cardIdentifier: "iceberg",
-        backgroundColor: "Blue"
-    },
-    {
-        image: "images/landscaping/island.svg", 
-        cardTitle: "The Island",
-        cardIdentifier: "island",
-        backgroundColor: "Blue"
-    },
-    {
-        image: "images/landscaping/mill.svg", 
-        cardTitle: "The Old Mill",
-        cardIdentifier: "mill",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/mountains-1.svg", 
-        cardTitle: "Snow Mountains",
-        cardIdentifier: "mountains1",
-        backgroundColor: "Blue"
-    },
-    {
-        image: "images/landscaping/mountains.svg", 
-        cardTitle: "Rising Moon",
-        cardIdentifier: "mountains2",
-        backgroundColor: "Purple"
-    },
-    {
-        image: "images/landscaping/nuclear-plant.svg", 
-        cardTitle: "Future",
-        cardIdentifier: "future1",
-        backgroundColor: "Yellow"
-    },
-    {
-        image: "images/landscaping/river.svg", 
-        cardTitle: "Flowing River",
-        cardIdentifier: "river",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/ruins.svg", 
-        cardTitle: "The Ruins",
-        cardIdentifier: "ruins",
-        backgroundColor: "Yellow"
-    },
-    {
-        image: "images/landscaping/sea.svg", 
-        cardTitle: "Great Sea",
-        cardIdentifier: "sea",
-        backgroundColor: "Red"
-    },
-    {
-        image: "images/landscaping/spruce.svg", 
-        cardTitle: "Hiding Forest",
-        cardIdentifier: "forest3",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/trees.svg", 
-        cardTitle: "Trees",
-        cardIdentifier: "forest4",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/village.svg", 
-        cardTitle: "Village",
-        cardIdentifier: "village",
-        backgroundColor: "Yellow"
-    },
-    {
-        image: "images/landscaping/waterfall-1.svg", 
-        cardTitle: "Great Waterfall",
-        cardIdentifier: "waterfall1",
-        backgroundColor: "Blue"
-    },
-    {
-        image: "images/landscaping/waterfall.svg", 
-        cardTitle: "Watterfall",
-        cardIdentifier: "waterfall2",
-        backgroundColor: "Green"
-    },
-    {
-        image: "images/landscaping/windmills.svg", 
-        cardTitle: "New Future",
-        cardIdentifier: "future2",
-        backgroundColor: "Green"
-    }
-];
-
-const educationCards = [
-    {
-        image: "images/education/abacus.svg", 
-        cardTitle: "Abacus",
-        cardIdentifier: "abacus",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/alarm-clock.svg", 
-        cardTitle: "Alarm-clock",
-        cardIdentifier: "alarm-clock",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/american-football.svg", 
-        cardTitle: "American-football",
-        cardIdentifier: "american-football",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/apple.svg", 
-        cardTitle: "Apple",
-        cardIdentifier: "apple",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/backpack.svg", 
-        cardTitle: "Backpack",
-        cardIdentifier: "backpack",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/basketball.svg", 
-        cardTitle: "Basketball",
-        cardIdentifier: "basketball",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/bell.svg", 
-        cardTitle: "Bell",
-        cardIdentifier: "bell",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/blackboard-1.svg", 
-        cardTitle: "Blackboard-1",
-        cardIdentifier: "blackboard-1",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/blackboard.svg", 
-        cardTitle: "Blackboard",
-        cardIdentifier: "blackboard",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/books-1.svg", 
-        cardTitle: "Books-1",
-        cardIdentifier: "books-1",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/books.svg", 
-        cardTitle: "Books",
-        cardIdentifier: "books",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/bookshelf.svg", 
-        cardTitle: "Bookshelf",
-        cardIdentifier: "bookshelf",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/briefcase.svg", 
-        cardTitle: "Briefcase",
-        cardIdentifier: "briefcase",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/column.svg", 
-        cardTitle: "Column",
-        cardIdentifier: "column",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/compass.svg", 
-        cardTitle: "Compass",
-        cardIdentifier: "compass",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/computer-mouse.svg", 
-        cardTitle: "Computer-mouse",
-        cardIdentifier: "computer-mouse",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/desk.svg", 
-        cardTitle: "Desk",
-        cardIdentifier: "desk",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/diploma-1.svg", 
-        cardTitle: "Diploma-1",
-        cardIdentifier: "diploma-1",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/diploma.svg", 
-        cardTitle: "Diploma",
-        cardIdentifier: "diploma",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/earth-globe.svg", 
-        cardTitle: "Earth-globe",
-        cardIdentifier: "earth-globe",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/eraser.svg", 
-        cardTitle: "Eraser",
-        cardIdentifier: "eraser",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/flask.svg", 
-        cardTitle: "Flask",
-        cardIdentifier: "flask",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/fountain-pen.svg", 
-        cardTitle: "Fountain-pen",
-        cardIdentifier: "fountain-pen",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/glasses.svg", 
-        cardTitle: "Glasses",
-        cardIdentifier: "glasses",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/light-bulb.svg", 
-        cardTitle: "Light-bulb",
-        cardIdentifier: "light-bulb",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/medal.svg", 
-        cardTitle: "Medal",
-        cardIdentifier: "medal",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/microscope.svg", 
-        cardTitle: "Microscope",
-        cardIdentifier: "microscope",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/molecule.svg", 
-        cardTitle: "Molecule",
-        cardIdentifier: "molecule",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/mortarboard.svg", 
-        cardTitle: "Mortarboard",
-        cardIdentifier: "mortarboard",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/newtons-cradle.svg", 
-        cardTitle: "Newtons-cradle",
-        cardIdentifier: "newtons-cradle",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/notebook.svg", 
-        cardTitle: "Notebook",
-        cardIdentifier: "notebook",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/open-book.svg", 
-        cardTitle: "Open-book",
-        cardIdentifier: "open-book",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/owl.svg", 
-        cardTitle: "Owl",
-        cardIdentifier: "owl",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/paint-brush.svg", 
-        cardTitle: "Paint-brush",
-        cardIdentifier: "paint-brush",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/palette.svg", 
-        cardTitle: "Palette",
-        cardIdentifier: "palette",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/paperclip.svg", 
-        cardTitle: "Paperclip",
-        cardIdentifier: "paperclip",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/pen.svg", 
-        cardTitle: "Pen",
-        cardIdentifier: "pen",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/pencil.svg", 
-        cardTitle: "Pencil",
-        cardIdentifier: "pencil",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/physics.svg", 
-        cardTitle: "Physics",
-        cardIdentifier: "physics",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/professor.svg", 
-        cardTitle: "Professor",
-        cardIdentifier: "professor",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/school-bus.svg", 
-        cardTitle: "School-bus",
-        cardIdentifier: "school-bus",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/school.svg", 
-        cardTitle: "School",
-        cardIdentifier: "school",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/scissors.svg", 
-        cardTitle: "Scissors",
-        cardIdentifier: "scissors",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/set-square.svg", 
-        cardTitle: "Set-square",
-        cardIdentifier: "set-square",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/student.svg", 
-        cardTitle: "Student",
-        cardIdentifier: "student",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/test-tubes.svg", 
-        cardTitle: "Test-tubes",
-        cardIdentifier: "test-tubes",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/test.svg", 
-        cardTitle: "Test",
-        cardIdentifier: "test",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/university.svg", 
-        cardTitle: "University",
-        cardIdentifier: "university",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/violin.svg", 
-        cardTitle: "Violin",
-        cardIdentifier: "violin",
-        backgroundColor: "gray"
-    },
-    {
-        image: "images/education/whistle.svg", 
-        cardTitle: "Whistle",
-        cardIdentifier: "whistle",
-        backgroundColor: "gray"
-    }
-];
-
-const landscapingDeck = {
-    deckSize: landscapingCards.length,
-    deckFrontStyle: "",
-    cards: landscapingCards
-};
-
-const educationDeck = {
-    deckSize: educationCards.length,
-    deckFrontStyle: "",
-    cards: educationCards
-};
-
 const gameDefaultProperties = {
     levelDeckSize: {
         easy: 6,
@@ -497,7 +11,7 @@ const gameDefaultProperties = {
         veryHard: 4
     },
 
-    standardPlayers: 2
+    standardPlayers: 1
 };
 
 const gameIds = {
@@ -528,6 +42,11 @@ const gameClasses = {
         deck: "deck",
     },
 
+    player: {
+    	playerCard: "playerCard",
+    	playerActive: "playerCard--active"
+    },
+
     card: {
         card: "card",
         cardTitle: "card__title",
@@ -546,12 +65,18 @@ const gameClasses = {
     },
 };
 
+const gameStrings = {
+	player: "Player ",
+	mistakes: "Mistakes: ",
+	successes: "Successes: "
+}
+
 var gameData = getDefaultGameData();
 
 function getDefaultGameData(){
     return {
         cards: [],
-        cardAmount: 3,
+        cardAmount: 2,
         currentCard: 0,
         mistakes: 0,
         cardsFlipped: 0,
@@ -559,6 +84,10 @@ function getDefaultGameData(){
         currentPlayer: 0,
         players: []
     };
+}
+
+var afonso = {
+	carteira: -50
 }
 
 function handleNextPlayer(){
@@ -576,7 +105,8 @@ function initializeGame(){
     
     changeCardAmount(gameParameters.cardAmount)
     initializePlayers(gameParameters.players);
-    createPlayersInfo(gameData.players);
+	setTimeout(addCurrentPlayerStyle(getCurrentPlayer()), 500);    
+    appendPlayersInfo(gameData.players);
     createGameDeck(gameParameters);
 }
 
@@ -585,9 +115,12 @@ function changeCardAmount(cardAmount){
     gameData.cardAmount = cardAmount;
 }
 
-function createPlayersInfo(players){
-    //@TODO IMPROVE
-    // create dom stuf regarding players
+function appendPlayersInfo(players){
+	let gameStatusContainer = document.getElementById(gameIds.gameInfoIds.container);
+	for (let i=0; i <players.length; i++){
+		let playerCard = players[i].cardStructure.card;
+		gameStatusContainer.appendChild(playerCard);
+	}
 }
 
 function initializePlayers(playersAmount){
@@ -601,7 +134,8 @@ function createPlayer(i){
     return {
         identifier: i,
         mistakes: 0,
-        success: 0    
+        success: 0,
+        cardStructure: createPlayerDOMCard(i)    
     };
 }
 
@@ -635,27 +169,13 @@ function getPlayersFromString(player){
     return !player || typeof player !== "string" ? gameDefaultProperties.standardPlayers : parseInt(player);
 }
 
-
 function getDeckFromName(deckName){
-    switch(deckName){
-        case "education":
-            return educationDeck;
-        case "landscaping":
-        default:
-            return landscapingDeck;
-    }
+
+	return decks[deckName] || decks["landscaping"];
 }
 
 function getCardAmountFromString(cardAmountText){
-    switch(cardAmountText){
-        case "hard":
-            return gameDefaultProperties.cardAmountModifier.hard;
-        case "veryHard":
-            return gameDefaultProperties.cardAmountModifier.veryHard;
-        case "regular":
-        default:
-            return gameDefaultProperties.cardAmountModifier.regular;
-    }
+	return cardAmountText != '' ? gameDefaultProperties.cardAmountModifier[cardAmountText] : gameDefaultProperties.cardAmountModifier.regular;
 }
 
 function parseGamePropertiesForm(form){
@@ -671,17 +191,45 @@ function parseGamePropertiesForm(form){
 
 function nextGameState(card){
     gameData.cards[gameData.currentCard] = card;
-    let currentPlayer = gameData.players[gameData.currentPlayer];
+    let currentPlayer = getCurrentPlayer();
     increaseCurrentCard();
 
-    if (isCurrentCardReset()){
-        areCurrentCardsTheSame() ? handleCorrectCards(currentPlayer): handleWrongCards(currentPlayer);
-        handleNextPlayer();
+    if (areMaxCardsFlipped()){
+    	let isThePlayCorrect = areCurrentCardsTheSame();
+        isThePlayCorrect ? handleCorrectCards(currentPlayer): handleWrongCards(currentPlayer);
+        if (!isThePlayCorrect) { 
+        	setTimeout(removeCurrentPlayerStyle(currentPlayer), 1000);
+			handleNextPlayer();
+			setTimeout(addCurrentPlayerStyle(getCurrentPlayer()), 1000);
+        }
     }
     
 }
 
-function isCurrentCardReset(){
+function getPlayerCard(player){
+	return player.cardStructure.card;
+}
+
+function removeCurrentPlayerStyle(currentPlayer){
+	return function (){
+		let playerCard = getPlayerCard(currentPlayer);
+		playerCard.classList.remove(gameClasses.player.playerActive)
+	}
+}
+
+function addCurrentPlayerStyle(currentPlayer){
+	return function (){
+		let playerCard = getPlayerCard(currentPlayer);
+		playerCard.classList.add(gameClasses.player.playerActive)
+	}
+}
+
+function getCurrentPlayer(){
+
+	return gameData.players[gameData.currentPlayer];
+}
+
+function areMaxCardsFlipped(){
 
     return gameData.currentCard === 0;
 }
@@ -695,6 +243,7 @@ function increaseCurrentCard(){
 
 function handleCorrectCards(currentPlayer){
     increasePlayerScore(currentPlayer);
+    updatePlayerSuccesses(currentPlayer);
     decreaseRemainingCards();
     updateCorrectCardsChosen();
     handleGameOver(isGameOver());
@@ -702,8 +251,8 @@ function handleCorrectCards(currentPlayer){
 
 function handleWrongCards(currentPlayer){
     increasePlayerMistakes(currentPlayer);
+    updatePlayerMistakes(currentPlayer);
     increaseGameMistakes();
-    updateDOMInfo();
     updateWrongCardsChosen();
 }
 
@@ -715,11 +264,42 @@ function increasePlayerScore (player){
 	player.success++;
 }
 
+function updatePlayerMistakes(player){
+	let DOMMistakes = getMistakesElement(player);
+	let mistakes = getPlayerMistakes(player);
+	let defaultText = gameStrings.mistakes;
+	DOMMistakes.textContent = defaultText + mistakes;
+}
+
+function updatePlayerSuccesses(player){
+	let DOMSuccesses = getSuccessesElement(player);
+	let successes = getPlayerSuccesses(player);
+	let defaultText = gameStrings.successes;
+	DOMSuccesses.textContent = defaultText + successes;
+
+}
+
+function getMistakesElement(player){
+	return player.cardStructure.mistakes;
+}
+function getSuccessesElement(player){
+	return player.cardStructure.successes;
+}
+
+function getPlayerMistakes(player){
+	return player.mistakes;
+}
+
+function getPlayerSuccesses(player){
+	return player.success;
+}
+
+
 function handleGameOver(isGameOver){
     if (!isGameOver){return;}
-    
+    // showGameOver
     setTimeout(resetGameSpace, 3400);
-    resetData();
+    resetGameData();
 }
 
 function resetGameSpace(){
@@ -728,23 +308,9 @@ function resetGameSpace(){
     hideGameStatus();
 }
 
-function resetData(){    
-    resetGameData();
-    resetDOMData();
-}
-
 function resetGameData(){
 
     gameData = getDefaultGameData();
-}
-
-function resetDOMData(){
-    let gameInfoIds = gameIds.gameInfoIds;
-    for (let DOMelement in gameInfoIds) {
-        if (gameInfoIds.hasOwnProperty(DOMelement)) {
-            resetTextById(gameInfoIds[DOMelement]);
-        }
-    }
 }
 
 function resetTextById(DOMId){
@@ -849,6 +415,30 @@ function startRound(){
     }
 }
 
+function createPlayerDOMCard(playerNumber){
+	let cardStructure = {};
+	let playerCard = document.createElement("DIV");
+	playerCard.classList.add(gameClasses.player.playerCard);
+
+	let cardTitle = document.createElement("h2");
+	if (gameData.players)
+	cardTitle.textContent = gameStrings.player + playerNumber;
+	playerCard.appendChild(cardTitle);
+
+	let mistakes = document.createElement("p");
+	mistakes.textContent = gameStrings.mistakes + "0";
+	cardStructure.mistakes = mistakes;
+	playerCard.appendChild(mistakes);
+
+	let successes = document.createElement("p");
+	successes.textContent = gameStrings.successes + "0";
+	cardStructure.successes = successes;
+	playerCard.appendChild(successes);
+
+	cardStructure.card = playerCard;
+	return cardStructure;
+}
+
 function createCard(cardProperties){
     //@TODO IMPROVE
     let card = document.createElement("DIV");
@@ -941,6 +531,20 @@ function createGameDeck(gameProperties){
     gameDeck = shuffleArray(gameDeck);
 
     appendGameDeckToDom(gameDeck, DOMdeck);
+}
+
+function _createDebugDeck(deckName){
+	let deck = getDeckFromName(deckName);
+	let gameDeck = [];
+	let DOMdeck = getDOMDeck();
+
+	for (let i=0; i < deck.deckSize; i++){
+		let cardStyle = deck.cards[i];
+        let card = createCard(cardStyle);
+        gameDeck.push(card);
+	}
+
+	appendGameDeckToDom(gameDeck, DOMdeck);
 }
 
 
