@@ -18,15 +18,12 @@ const gameIds = {
     gameInfoIds: {
         container: "gamestatuscontainer",
         remainingCards: "remainingCardsInfo", 
-        mistakes: "mistakesInfo", 
-        deck: "deckInfo", 
-        level: "levelInfo", 
-        score: "scoreInfo",
-        players: "playersInfo"
+        mistakes: "mistakesInfo"
     },
 
-    gamePropertiesFormId: {
-        formId: "gamePropertiesForm",
+    gameProperties: {
+        id: "gamePropertiesContainer",
+        form: "gamePropertiesForm",
     },
 
     cardContainersIds:{
@@ -37,14 +34,16 @@ const gameIds = {
 
 const gameClasses = {
     game: {
-        propertiesHidden: "gameProperties__form--hidden",
+        propertiesHidden: "gameProperties--hidden",
         statusHidden: "gameStatus--hidden",
         deck: "deck",
     },
 
     player: {
-    	playerCard: "playerCard",
-    	playerActive: "playerCard--active"
+        playerCard: "playerCard",
+        playerActive: "playerCard--active",
+        crown: "crown",
+        crownHidden: "crown--hidden"
     },
 
     card: {
@@ -66,9 +65,13 @@ const gameClasses = {
 };
 
 const gameStrings = {
-	player: "Player ",
-	mistakes: "Mistakes: ",
-	successes: "Successes: "
+    player: "Player ",
+    mistakes: "Mistakes: ",
+    successes: "Successes: "
+};
+
+const gamePaths = {
+    crown: "images/assets/crown.svg"
 }
 
 var gameData = getDefaultGameData();
@@ -86,28 +89,30 @@ function getDefaultGameData(){
     };
 }
 
-var afonso = {
-	carteira: -50
-}
-
 function handleNextPlayer(){
 
     gameData.currentPlayer === gameData.players.length - 1 ? gameData.currentPlayer = 0 : gameData.currentPlayer++;
 }
 
 function initializeGame(){
-	resetGameData();
-    let form = document.getElementById(gameIds.gamePropertiesFormId.formId);
-    let gameParameters = parseGamePropertiesForm(form);
+    resetGameData();
 
-    hideGamePropertiesForm();
+    let form = document.getElementById(gameIds.gameProperties.form);
+    let gameParameters = parseGamePropertiesForm(form);
+    
+    hideGameProperties();
     showGameStatus();
     
-    changeCardAmount(gameParameters.cardAmount)
     initializePlayers(gameParameters.players);
-	setTimeout(addCurrentPlayerStyle(getCurrentPlayer()), 500);    
-    appendPlayersInfo(gameData.players);
+    initializeDeck(gameParameters);
+
+}
+
+function initializeDeck(gameParameters){
+    changeCardAmount(gameParameters.cardAmount);
     createGameDeck(gameParameters);
+    flipAllAvailableCards();
+    setTimeout(flipAllAvailableCards, 750);
 }
 
 function changeCardAmount(cardAmount){
@@ -116,14 +121,20 @@ function changeCardAmount(cardAmount){
 }
 
 function appendPlayersInfo(players){
-	let gameStatusContainer = document.getElementById(gameIds.gameInfoIds.container);
-	for (let i=0; i <players.length; i++){
-		let playerCard = players[i].cardStructure.card;
-		gameStatusContainer.appendChild(playerCard);
-	}
+    let gameStatusContainer = document.getElementById(gameIds.gameInfoIds.container);
+    for (let i=0; i <players.length; i++){
+        let playerCard = players[i].cardStructure.card;
+        gameStatusContainer.appendChild(playerCard);
+    }
 }
 
 function initializePlayers(playersAmount){
+    createPlayersArray(playersAmount);
+    setTimeout(addCurrentPlayerStyle(getCurrentPlayer()), 900);    
+    appendPlayersInfo(getPlayers());
+}
+
+function createPlayersArray(playersAmount){
     for (let i=0; i < playersAmount; i++){
         let player = createPlayer(i+1);
         gameData.players.push(player);
@@ -139,13 +150,13 @@ function createPlayer(i){
     };
 }
 
-function hideGamePropertiesForm(){
-    let gameInitializer = document.getElementById(gameIds.gamePropertiesFormId.formId);
+function hideGameProperties(){
+    let gameInitializer = document.getElementById(gameIds.gameProperties.id);
     gameInitializer.classList.add(gameClasses.game.propertiesHidden);
 }
 
 function showGamePropertiesForm(){
-    let gameInitializer = document.getElementById(gameIds.gamePropertiesFormId.formId);
+    let gameInitializer = document.getElementById(gameIds.gameProperties.id);
     gameInitializer.classList.remove(gameClasses.game.propertiesHidden);
 }
 
@@ -171,11 +182,11 @@ function getPlayersFromString(player){
 
 function getDeckFromName(deckName){
 
-	return decks[deckName] || decks["landscaping"];
+    return decks[deckName] || decks["landscaping"];
 }
 
 function getCardAmountFromString(cardAmountText){
-	return cardAmountText != '' ? gameDefaultProperties.cardAmountModifier[cardAmountText] : gameDefaultProperties.cardAmountModifier.regular;
+    return cardAmountText != '' ? gameDefaultProperties.cardAmountModifier[cardAmountText] : gameDefaultProperties.cardAmountModifier.regular;
 }
 
 function parseGamePropertiesForm(form){
@@ -195,38 +206,38 @@ function nextGameState(card){
     increaseCurrentCard();
 
     if (areMaxCardsFlipped()){
-    	let isThePlayCorrect = areCurrentCardsTheSame();
+        let isThePlayCorrect = areCurrentCardsTheSame();
         isThePlayCorrect ? handleCorrectCards(currentPlayer): handleWrongCards(currentPlayer);
         if (!isThePlayCorrect) { 
-        	setTimeout(removeCurrentPlayerStyle(currentPlayer), 1000);
-			handleNextPlayer();
-			setTimeout(addCurrentPlayerStyle(getCurrentPlayer()), 1000);
+            setTimeout(removeCurrentPlayerStyle(currentPlayer), 1000);
+            handleNextPlayer();
+            setTimeout(addCurrentPlayerStyle(getCurrentPlayer()), 1000);
         }
     }
     
 }
 
 function getPlayerCard(player){
-	return player.cardStructure.card;
+    return player.cardStructure.card;
 }
 
 function removeCurrentPlayerStyle(currentPlayer){
-	return function (){
-		let playerCard = getPlayerCard(currentPlayer);
-		playerCard.classList.remove(gameClasses.player.playerActive)
-	}
+    return function (){
+        let playerCard = getPlayerCard(currentPlayer);
+        playerCard.classList.remove(gameClasses.player.playerActive)
+    }
 }
 
 function addCurrentPlayerStyle(currentPlayer){
-	return function (){
-		let playerCard = getPlayerCard(currentPlayer);
-		playerCard.classList.add(gameClasses.player.playerActive)
-	}
+    return function (){
+        let playerCard = getPlayerCard(currentPlayer);
+        playerCard.classList.add(gameClasses.player.playerActive)
+    }
 }
 
 function getCurrentPlayer(){
 
-	return gameData.players[gameData.currentPlayer];
+    return gameData.players[gameData.currentPlayer];
 }
 
 function areMaxCardsFlipped(){
@@ -257,55 +268,87 @@ function handleWrongCards(currentPlayer){
 }
 
 function increasePlayerMistakes (player){
-	player.mistakes++;
+    player.mistakes++;
 }
 
 function increasePlayerScore (player){
-	player.success++;
+    player.success++;
 }
 
 function updatePlayerMistakes(player){
-	let DOMMistakes = getMistakesElement(player);
-	let mistakes = getPlayerMistakes(player);
-	let defaultText = gameStrings.mistakes;
-	DOMMistakes.textContent = defaultText + mistakes;
+    let DOMMistakes = getMistakesElement(player);
+    let mistakes = getPlayerMistakes(player);
+    let defaultText = gameStrings.mistakes;
+    DOMMistakes.textContent = defaultText + mistakes;
 }
 
 function updatePlayerSuccesses(player){
-	let DOMSuccesses = getSuccessesElement(player);
-	let successes = getPlayerSuccesses(player);
-	let defaultText = gameStrings.successes;
-	DOMSuccesses.textContent = defaultText + successes;
+    let DOMSuccesses = getSuccessesElement(player);
+    let successes = getPlayerSuccesses(player);
+    let defaultText = gameStrings.successes;
+    DOMSuccesses.textContent = defaultText + successes;
 
 }
 
 function getMistakesElement(player){
-	return player.cardStructure.mistakes;
+    return player.cardStructure.mistakes;
 }
 function getSuccessesElement(player){
-	return player.cardStructure.successes;
+    return player.cardStructure.successes;
 }
 
 function getPlayerMistakes(player){
-	return player.mistakes;
+    return player.mistakes;
 }
 
 function getPlayerSuccesses(player){
-	return player.success;
+    return player.success;
 }
 
 
 function handleGameOver(isGameOver){
     if (!isGameOver){return;}
     // showGameOver
+    let players = getPlayers();
+    let winner = getWinner(players);
+    updateWinnerStyle(winner);
     setTimeout(resetGameSpace, 3400);
     resetGameData();
+
+}
+
+function getPlayers(){
+
+    return gameData.players;
+}
+
+function getWinner(players){
+    return players[0];
+}
+
+function getWinnerToken(winner){
+    return winner.cardStructure.winnerToken;
+}
+
+function updateWinnerStyle(winner){
+    let winnerToken = getWinnerToken(winner);
+    winnerToken.classList.remove(gameClasses.player.crownHidden);
 }
 
 function resetGameSpace(){
     removeDeck();
+    removePlayerCards();
     showGamePropertiesForm();
     hideGameStatus();
+}
+
+function removePlayerCards(){
+    let container = document.getElementById(gameIds.gameInfoIds.container);
+    let children = container.children;
+    let childrenCount = children.length
+    for (let i=0; i < childrenCount; i++){
+        container.removeChild(children[0]);
+    }
 }
 
 function resetGameData(){
@@ -416,27 +459,33 @@ function startRound(){
 }
 
 function createPlayerDOMCard(playerNumber){
-	let cardStructure = {};
-	let playerCard = document.createElement("DIV");
-	playerCard.classList.add(gameClasses.player.playerCard);
+    let cardStructure = {};
+    let playerCard = document.createElement("DIV");
+    playerCard.classList.add(gameClasses.player.playerCard);
 
-	let cardTitle = document.createElement("h2");
-	if (gameData.players)
-	cardTitle.textContent = gameStrings.player + playerNumber;
-	playerCard.appendChild(cardTitle);
+    let cardTitle = document.createElement("h2");
+    if (gameData.players)
+    cardTitle.textContent = gameStrings.player + playerNumber;
+    playerCard.appendChild(cardTitle);
 
-	let mistakes = document.createElement("p");
-	mistakes.textContent = gameStrings.mistakes + "0";
-	cardStructure.mistakes = mistakes;
-	playerCard.appendChild(mistakes);
+    let mistakes = document.createElement("p");
+    mistakes.textContent = gameStrings.mistakes + "0";
+    cardStructure.mistakes = mistakes;
+    playerCard.appendChild(mistakes);
 
-	let successes = document.createElement("p");
-	successes.textContent = gameStrings.successes + "0";
-	cardStructure.successes = successes;
-	playerCard.appendChild(successes);
+    let successes = document.createElement("p");
+    successes.textContent = gameStrings.successes + "0";
+    cardStructure.successes = successes;
+    playerCard.appendChild(successes);
 
-	cardStructure.card = playerCard;
-	return cardStructure;
+    let winnerCrown = document.createElement("img");
+    winnerCrown.src = gamePaths.crown;
+    winnerCrown.classList.add(gameClasses.player.crown, gameClasses.player.crownHidden);
+    cardStructure.winnerToken = winnerCrown;
+    playerCard.appendChild(winnerCrown);
+
+    cardStructure.card = playerCard;
+    return cardStructure;
 }
 
 function createCard(cardProperties){
@@ -534,17 +583,17 @@ function createGameDeck(gameProperties){
 }
 
 function _createDebugDeck(deckName){
-	let deck = getDeckFromName(deckName);
-	let gameDeck = [];
-	let DOMdeck = getDOMDeck();
+    let deck = getDeckFromName(deckName);
+    let gameDeck = [];
+    let DOMdeck = getDOMDeck();
 
-	for (let i=0; i < deck.deckSize; i++){
-		let cardStyle = deck.cards[i];
+    for (let i=0; i < deck.deckSize; i++){
+        let cardStyle = deck.cards[i];
         let card = createCard(cardStyle);
         gameDeck.push(card);
-	}
+    }
 
-	appendGameDeckToDom(gameDeck, DOMdeck);
+    appendGameDeckToDom(gameDeck, DOMdeck);
 }
 
 
@@ -616,7 +665,7 @@ function isCardInGameData(card){
     return isCardInList;
 }
 
-function _flipAllAvailableCards(){
+function flipAllAvailableCards(){
     let cards = document.getElementsByClassName(gameClasses.card.card);
     for (let i = 0; i < cards.length; i++) {
         if (!isCardDisabled(cards[i]) && !isCardPlayerFlipped(cards[i])){
