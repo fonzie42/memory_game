@@ -142,7 +142,7 @@ class Game {
         let differenceInCards = 0;
         const cards = this.getCards();
         for (let i=1; i <= this.getCardAmount() - 1; i++){
-            if (getCardIdentifier(cards[i-1]) !== getCardIdentifier(cards[i])){
+            if (cards[i-1].getCardIdentifier() !== cards[i].getCardIdentifier()){
                 differenceInCards++;
             }
         }
@@ -302,7 +302,7 @@ class Game {
             cards = this.getCards(),
             cardAmount = this.getCardAmount();
         for (let i=0; i < cardAmount; i++){
-            let backFace = getCardBackFace(cards[i]);
+            let backFace = cards[i].getCardBackFace();
             cardBackFaces.push(backFace);
         }
 
@@ -316,7 +316,8 @@ class Game {
             cardAmount = this.getCardAmount();
 
         for (let i=0; i < cardAmount; i++){
-            cards[i].removeEventListener("click", startRound);
+            let cardElement = cards[i].getDOMElement();
+            cardElement.removeEventListener("click", startRound);
         }
     }
 
@@ -328,7 +329,7 @@ class Game {
 
     unflipCurrentCards(cards){
         for (let i=0; i < cards.length; i++){
-            cards[i].classList.toggle(gameClasses.card.flippedCard);
+            cards[i].flip();
         }
     }
 
@@ -342,6 +343,14 @@ class Game {
         }
 
         return isCardInList;
+    }
+
+
+    isCardPlayerFlipped(card){
+        let DOMCard = card.getDOMElement(),
+            isCardFlipped = DOMCard.classList.contains(gameClasses.card.flippedCard),
+            isInCurrentCardsList = this.isCardInGameData(card);
+        return (isCardFlipped && isInCurrentCardsList);
     }
 }
 
@@ -461,7 +470,93 @@ class Player{
     }
 }
 
+class Card {
+    constructor(cardProperties){
+        this.cardBackFace = this.createBackFace(cardProperties);
+        this.cardFrontFace = this.createFrontFace();
+        this.cardElement = this.createCardElement();
+        this.cardIdentifier = cardProperties.cardIdentifier;
+    }
+
+    getCardIdentifier(){
+
+        return this.cardIdentifier;
+    }
+
+    getCardBackFace(){
+
+        return this.cardBackFace;
+    }
+
+    getCardFrontFace(){
+
+        return this.cardFrontFace;
+    }
+
+    getDOMElement(){
+        return this.cardElement;
+    }
+
+    setCardIdentifier(identifier){
+
+        this.cardIdentifier = identifier;
+    }
+
+    createCardElement(){
+        let card = document.createElement("DIV");
+        card.classList.add(gameClasses.card.card);
+        card.addEventListener('click', startRound.bind(null, this));
+        card.appendChild(this.getCardFrontFace());
+        card.appendChild(this.getCardBackFace());
+        return card;
+    }
+
+    createFrontFace(){
+        let frontFace = document.createElement("DIV");
+        frontFace.classList.add(gameClasses.cardFace.cardFace);
+        frontFace.classList.add(gameClasses.cardFace.front);
+        frontFace.classList.add(gameClasses.cardFace.frontStandardImg);
+        frontFace.classList.add(gameClasses.cardFace.backStandardBg);
+        return frontFace;
+    }
+
+    createBackFace(cardProperties){
+        let backFace = document.createElement("DIV");
+
+        backFace.classList.add(gameClasses.cardFace.cardFace);
+        backFace.classList.add(gameClasses.cardFace.back);
+        let backgroundColor = gameClasses.cardFace.backgroundPrefix + cardProperties.backgroundColor;
+        backFace.classList.add(backgroundColor)
+        backFace.appendChild(this.createBackFaceImage(cardProperties.image));
+
+        let cardTitle = document.createElement("P");
+        let titleColor = gameClasses.card.cardTitlePrefix + cardProperties.backgroundColor;
+        cardTitle.classList.add(gameClasses.card.cardTitle);
+        cardTitle.classList.add(titleColor);
+        cardTitle.textContent = cardProperties.cardTitle;
+
+        backFace.appendChild(cardTitle);
+        return backFace;
+    }
+
+    createBackFaceImage(image){
+        let backFaceImage = document.createElement("IMG");
+        backFaceImage.src=image;
+        return backFaceImage;
+    }
+
+    isCardDisabled(){
+        let backFace = this.getCardBackFace();
+        return backFace.classList.contains(gameClasses.cardFace.disabledCard);
+    }
+
+    flip(){
+        this.cardElement.classList.toggle(gameClasses.card.flippedCard);
+    }
+}
+
 var currentGame = {};
+var globalDeck = [];
 
 function initializeGame(){
     resetGameData();
@@ -518,16 +613,13 @@ function resetGameData(){
     currentGame = {};
 }
 
-function startRound(){
-    let isCardAlreadyFliped = !this.classList.contains(gameClasses.card.flippedCard);
+function startRound(card){
+    let isCardAlreadyFliped = !card.cardElement.classList.contains(gameClasses.card.flippedCard);
     if (isCardAlreadyFliped) {
-        this.classList.toggle(gameClasses.card.flippedCard);
-        currentGame.nextGameState(this);
+        card.flip();
+        currentGame.nextGameState(card);
     }
 }
-
-
-
 
 function getDOMDeck(){
     const DOMdeck = document.getElementById(gameIds.cardContainersIds.cardDeck);
@@ -560,14 +652,14 @@ function createGameDeck(gameProperties){
     for (let i = 0; i < gameDeckSize; i++){
         for (let j = 0; j < gameProperties.cardAmount; j++){
             let cardStyle = deck.cards[randomCardStyleIndexes[k]];
-            let card = createCard(cardStyle);
+            let card = new Card(cardStyle);
             gameDeck.push(card);
         }
         k++;
     }
 
     gameDeck = shuffleArray(gameDeck);
-
+    globalDeck = gameDeck;
     appendGameDeckToDom(gameDeck, DOMdeck);
 
     return gameDeck.length;
@@ -580,7 +672,7 @@ function _createDebugDeck(deckName){
 
     for (let i=0; i < deck.deckSize; i++){
         let cardStyle = deck.cards[i];
-        let card = createCard(cardStyle);
+        let card = new Card(cardStyle);
         gameDeck.push(card);
     }
 
@@ -590,7 +682,7 @@ function _createDebugDeck(deckName){
 
 function appendGameDeckToDom(gameDeck, gameSpace){
     for (let i=0; i <gameDeck.length; i++){
-        gameSpace.appendChild(gameDeck[i]);
+        gameSpace.appendChild(gameDeck[i].getDOMElement());
     }
 }
 
@@ -621,96 +713,9 @@ function shuffleArray(array){
 }
 
 function flipAllAvailableCards(){
-    let cards = document.getElementsByClassName(gameClasses.card.card);
-    for (let i = 0; i < cards.length; i++) {
-        if (!isCardDisabled(cards[i]) && !isCardPlayerFlipped(cards[i])){
-          cards[i].classList.toggle(gameClasses.card.flippedCard);    
+    for (let i = 0; i < globalDeck.length; i++) {
+        if (!globalDeck[i].isCardDisabled() && !currentGame.isCardPlayerFlipped(globalDeck[i])){
+            globalDeck[i].flip();    
         }
     }
 }
-
-function isCardPlayerFlipped(card){
-    if (card == undefined){
-        return undefined;
-    } else {
-        let isCardFlipped = card.classList.contains(gameClasses.card.flippedCard),
-            isInCurrentCardsList = currentGame.isCardInGameData(card);
-        return (isCardFlipped && isInCurrentCardsList);
-    }
-}
-
-
-
-
-
-
-function getCardIdentifier(card){
-
-    return card.dataset.cardidentifier;
-}
-
-function getCardBackFace(card){
-
-    return card.lastChild;
-}
-
-function createCard(cardProperties){
-    //@TODO IMPROVE
-    let card = document.createElement("DIV");
-    card.classList.add(gameClasses.card.card);    
-    card.setAttribute("data-cardidentifier",cardProperties.cardIdentifier);
-    card.addEventListener('click', startRound);  
-    
-    let cardFront = createFrontFace();
-    card.appendChild(cardFront);
-    
-    let cardBack = createBackFace(cardProperties);
-    card.appendChild(cardBack);
-    
-    return card;
-}
-
-function createFrontFace(){
-    let frontFace = document.createElement("DIV");
-    frontFace.classList.add(gameClasses.cardFace.cardFace);
-    frontFace.classList.add(gameClasses.cardFace.front);
-    frontFace.classList.add(gameClasses.cardFace.frontStandardImg);
-    frontFace.classList.add(gameClasses.cardFace.backStandardBg);
-    return frontFace;
-}
-
-function createBackFace(cardProperties){
-    //@TODO IMPROVE
-    let backFace = document.createElement("DIV");
-
-    backFace.classList.add(gameClasses.cardFace.cardFace);
-    backFace.classList.add(gameClasses.cardFace.back);
-    let backgroundColor = gameClasses.cardFace.backgroundPrefix + cardProperties.backgroundColor;
-    backFace.classList.add(backgroundColor)
-    backFace.appendChild(createBackFaceImage(cardProperties));
-
-    let cardTitle = document.createElement("P");
-    let titleColor = gameClasses.card.cardTitlePrefix + cardProperties.backgroundColor;
-    cardTitle.classList.add(gameClasses.card.cardTitle);
-    cardTitle.classList.add(titleColor);
-    cardTitle.textContent = cardProperties.cardTitle;
-
-    backFace.appendChild(cardTitle);
-    return backFace;
-}
-
-function createBackFaceImage(cardProperties){
-    let backFaceImage = document.createElement("IMG");
-    backFaceImage.src=cardProperties.image;
-    return backFaceImage;
-}
-
-function isCardDisabled(card){
-    if (card == undefined){
-        return undefined;
-    } else {
-        let backFace = getCardBackFace(card);
-        return backFace.classList.contains(gameClasses.cardFace.disabledCard);
-    }
-}
-
