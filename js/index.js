@@ -296,6 +296,29 @@ class Game {
         this.setCardAmount(cardAmount);
         this.setRemainingCards(deckSize);
     }
+
+    updateCorrectCardsChosen(){
+        let cardBackFaces = [],
+            cards = this.getCards(),
+            cardAmount = this.getCardAmount();
+        for (let i=0; i < cardAmount; i++){
+            let backFace = getCardBackFace(cards[i]);
+            cardBackFaces.push(backFace);
+        }
+
+        setTimeout(updateBackFaceStyle(cardBackFaces), 1000);
+        disableCurrentCards();
+        this.removeCurrentCardsInfo();
+    }
+
+    disableCurrentCards(){
+        let cards = this.getCards(),
+            cardAmount = this.getCardAmount();
+
+        for (let i=0; i < cardAmount; i++){
+            cards[i].removeEventListener("click", startRound);
+        }
+    }
 }
 
 class Player{
@@ -484,30 +507,6 @@ function getCardIdentifier(card){
 function getCardBackFace(card){
 
     return card.lastChild;
-}
-
-// @game
-function updateCorrectCardsChosen(){
-    let cardBackFaces = [],
-        cards = currentGame.getCards(),
-        cardAmount = currentGame.getCardAmount();
-    for (let i=0; i < cardAmount; i++){
-        let backFace = getCardBackFace(cards[i]);
-        cardBackFaces.push(backFace);
-    }
-
-    setTimeout(updateBackFaceStyle(cardBackFaces), 1000);
-    disableCurrentCards();
-    currentGame.removeCurrentCardsInfo();
-}
-
-function disableCurrentCards(){
-    let cards = currentGame.getCards(),
-        cardAmount = currentGame.getCardAmount();
-
-    for (let i=0; i < cardAmount; i++){
-        cards[i].removeEventListener("click", startRound);
-    }
 }
 
 function updateBackFaceStyle(cardBackFaces){
