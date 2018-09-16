@@ -285,6 +285,17 @@ class Game {
             }
         }
     }
+
+    initialize(playersAmount){
+        this.hideGameProperties();
+        this.showGameStatus();   
+        this.initializePlayers(playersAmount);
+    }
+
+    updateDeckInfo(cardAmount, deckSize){
+        this.setCardAmount(cardAmount);
+        this.setRemainingCards(deckSize);
+    }
 }
 
 class Player{
@@ -408,24 +419,21 @@ var currentGame = {};
 
 function initializeGame(){
     resetGameData();
-    currentGame = new Game();
-
     let form = document.getElementById(gameIds.gameProperties.form);
     let gameParameters = parseGamePropertiesForm(form);
 
-    currentGame.hideGameProperties();
-    currentGame.showGameStatus();
+    currentGame = new Game();
+    currentGame.initialize(gameParameters.players);
     
-    currentGame.initializePlayers(gameParameters.players);
-    initializeDeck(gameParameters);
-
+    let deckSize = initializeDeck(gameParameters);
+    currentGame.updateDeckInfo(gameParameters.cardAmount, deckSize);
 }
 
 function initializeDeck(gameParameters){
-    currentGame.setCardAmount(gameParameters.cardAmount);
-    createGameDeck(gameParameters);
+    let gameDeckSize = createGameDeck(gameParameters);
     flipAllAvailableCards();
     setTimeout(flipAllAvailableCards, 750);
+    return gameDeckSize;
 }
 
 function getLevelFromString(level){
@@ -614,11 +622,11 @@ function createGameDeck(gameProperties){
         k++;
     }
 
-    currentGame.setRemainingCards(gameDeck.length);
-
     gameDeck = shuffleArray(gameDeck);
 
     appendGameDeckToDom(gameDeck, DOMdeck);
+
+    return gameDeck.length;
 }
 
 function _createDebugDeck(deckName){
