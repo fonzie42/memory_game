@@ -74,100 +74,358 @@ const gamePaths = {
     crown: "images/assets/crown.svg"
 }
 
-var gameData = getDefaultGameData();
+class Game {
+    constructor(){
+        this.cardAmount = 2;
+        this.players = [];
+        this.cards = [];
+        this.currentCard = 0;
+        this.mistakes = 0;
+        this.cardsFlipped = 0;
+        this.remainingCards = -1;
+        this.currentPlayer = 0;
+    }
 
-function getDefaultGameData(){
-    return {
-        cards: [],
-        cardAmount: 2,
-        currentCard: 0,
-        mistakes: 0,
-        cardsFlipped: 0,
-        remainingCards: -1,
-        currentPlayer: 0,
-        players: []
-    };
+
+    getCurrentPlayer(){
+        return this.players[this.currentPlayer];
+    }
+
+    getPlayers(){
+        return this.players;
+    }
+
+    getCards(){
+        return this.cards;
+    }
+
+    getCardAmount(){
+        return this.cardAmount;
+    }
+
+    getWinner(){
+        let players = this.getPlayers(),
+            winner = players[0];
+        for (let i = 1; i < players.length; i++){
+            if (players[i].getPlayerSuccesses() > winner.success){
+                winner = players[i];
+            }
+        }
+        return winner;
+    }
+
+    setRemainingCards(remainingCards){
+        this.remainingCards = remainingCards;
+    }
+
+    setCardAmount(cardAmount){
+        this.cardAmount = cardAmount || 2;
+    }
+
+    addPlayer(player){
+        this.players.push(player);
+    }
+
+    addCard(card){
+        this.cards[this.currentCard] = card;
+        this.increaseCurrentCard();
+    }
+
+    handleNextPlayer(){
+        this.currentPlayer === this.players.length - 1 ? this.currentPlayer = 0 : this.currentPlayer++;
+    }
+
+    areAllCardsAllowedFlipped(){
+        return this.currentCard === 0;
+    }
+
+    areCurrentCardsTheSame(){
+        let differenceInCards = 0;
+        const cards = this.getCards();
+        for (let i=1; i <= this.getCardAmount() - 1; i++){
+            if (getCardIdentifier(cards[i-1]) !== getCardIdentifier(cards[i])){
+                differenceInCards++;
+            }
+        }
+
+        return differenceInCards === 0;
+    }
+
+    isGameOver(){
+        return this.remainingCards === 0;
+    }
+
+    increaseCurrentCard(){
+        let cardAmount = this.cardAmount,
+            currentCard = this.currentCard;
+
+        this.currentCard = (currentCard === cardAmount - 1) ? 0 : currentCard + 1;
+    }
+
+    increaseGameMistakes(){
+        this.mistakes++;
+    }
+
+    increaseCardsFlipped(){
+        this.cardsFlipped++;
+    }
+
+    decreaseRemainingCards(){
+        this.remainingCards = this.remainingCards - this.cardAmount;
+    }
+
+    removeCurrentCardsInfo(){
+        this.cards = [];
+    }
+
+    createPlayersArray(playersAmount){
+        for (let i=0; i < playersAmount; i++){
+            let player = new Player(i+1);
+            this.addPlayer(player);
+        }
+    }
+
+    handleCorrectCards(){
+        let currentPlayer = this.getCurrentPlayer();
+        currentPlayer.increasePlayerScore();
+        this.decreaseRemainingCards();
+        updateCorrectCardsChosen();
+        this.handleGameOver(this.isGameOver());
+    }
+
+    updateWrongCardsChosen(){
+        setTimeout(unflipCurrentCards(this.getCards()), 1000);
+        this.removeCurrentCardsInfo();
+    }
+
+    handleWrongCards(){
+        let currentPlayer = this.getCurrentPlayer();
+        currentPlayer.increasePlayerMistakes();
+        this.increaseGameMistakes();
+        this.updateWrongCardsChosen();
+    }
+
+    handleGameOver(isGameOver){
+        if (!isGameOver){return;}
+
+        let winner = this.getWinner();
+        winner.setWinnerStyle();
+        setTimeout(this.resetGameSpace.bind(this), 3400);
+    }
+
+    resetGameSpace(){
+        this.removeDeck();
+        this.removePlayersCards();
+        this.showGamePropertiesForm();
+        this.hideGameStatus();
+    }
+
+    removeDeck(){
+        let DOMdeck = document.getElementById(gameIds.cardContainersIds.cardDeck);
+        DOMdeck.remove();    
+    }
+
+    removePlayersCards(){
+        let container = document.getElementById(gameIds.gameInfoIds.container);
+        let children = container.children;
+        let childrenCount = children.length
+        for (let i=0; i < childrenCount; i++){
+            container.removeChild(children[0]);
+        }
+    }
+
+    hideGameProperties(){
+        let gameInitializer = document.getElementById(gameIds.gameProperties.id);
+        gameInitializer.classList.add(gameClasses.game.propertiesHidden);
+    }
+
+    showGamePropertiesForm(){
+        let gameInitializer = document.getElementById(gameIds.gameProperties.id);
+        gameInitializer.classList.remove(gameClasses.game.propertiesHidden);
+    }
+
+    hideGameStatus(){
+        let gameInitializer = document.getElementById(gameIds.gameInfoIds.container);
+        gameInitializer.classList.add(gameClasses.game.statusHidden);
+    }
+
+    showGameStatus(){
+        let gameInitializer = document.getElementById(gameIds.gameInfoIds.container);
+        gameInitializer.classList.remove(gameClasses.game.statusHidden);
+    }
+
+    initializePlayers(playersAmount){
+        this.createPlayersArray(playersAmount);
+        let currentPlayer = this.getCurrentPlayer()
+        setTimeout(currentPlayer.addCurrentPlayerStyle.bind(currentPlayer), 900);    
+        this.appendPlayersInfo(this.getPlayers());
+    }
+
+    appendPlayersInfo(players){
+        let gameStatusContainer = document.getElementById(gameIds.gameInfoIds.container);
+        for (let i=0; i <players.length; i++){
+            let playerCard = players[i].getCard();
+            gameStatusContainer.appendChild(playerCard);
+        }
+    }
+
+    nextGameState(card){
+        this.increaseCardsFlipped();
+        this.addCard(card);
+        let currentPlayer = this.getCurrentPlayer();
+
+        if (this.areAllCardsAllowedFlipped()){
+            let isThePlayCorrect = this.areCurrentCardsTheSame();
+            isThePlayCorrect ? this.handleCorrectCards(): this.handleWrongCards();
+            if (!isThePlayCorrect) { 
+                setTimeout(currentPlayer.removeCurrentPlayerStyle.bind(currentPlayer), 1000);
+                this.handleNextPlayer();
+                currentPlayer = this.getCurrentPlayer();
+                setTimeout(currentPlayer.addCurrentPlayerStyle.bind(currentPlayer), 1000);
+            }
+        }
+    }
 }
 
-function handleNextPlayer(){
+class Player{
+    constructor(i){
+        this.identifier = i || 1;
+        this.mistakes = 0;
+        this.success = 0;
+        this.mistakesElement = this.createMistakesElement();
+        this.successesElement = this.createSuccessesElement();
+        this.winnerTokenElement = this.createWinnerToken();
+        this.card = this.createPlayerCard();
+    }
 
-    gameData.currentPlayer === gameData.players.length - 1 ? gameData.currentPlayer = 0 : gameData.currentPlayer++;
+    getIdentifier() {
+        return this.identifier;
+    }
+
+    getCard() {
+        return this.card;
+    }
+
+    getMistakesElement() {
+        return this.mistakesElement;
+    }
+
+    getSuccessesElement() {
+        return this.successesElement;
+    }
+
+    getWinnerToken() {
+        return this.winnerTokenElement;
+    }
+
+    getPlayerMistakes() {
+        return this.mistakes;
+    }
+
+    getPlayerSuccesses() {
+        return this.success;
+    }
+
+    createMistakesElement(){
+        let mistakes = document.createElement("p");
+        mistakes.textContent = gameStrings.mistakes + "0";
+        return mistakes;
+    }
+
+    createSuccessesElement(){
+        let successes = document.createElement("p");
+        successes.textContent = gameStrings.successes + "0";
+        return successes;
+    }
+
+    createWinnerToken(){
+        let winnerCrown = document.createElement("img");
+        winnerCrown.src = gamePaths.crown;
+        winnerCrown.classList.add(gameClasses.player.crown, gameClasses.player.crownHidden);
+        return winnerCrown;
+    }
+
+    createPlayerCard(){
+        let playerCard = document.createElement("DIV");
+        playerCard.classList.add(gameClasses.player.playerCard);
+
+        let cardTitle = document.createElement("h2");
+        cardTitle.textContent = gameStrings.player + this.getIdentifier();
+        
+        playerCard.appendChild(cardTitle);
+        playerCard.appendChild(this.getMistakesElement());   
+        playerCard.appendChild(this.getSuccessesElement());
+        playerCard.appendChild(this.getWinnerToken());
+
+        return playerCard;
+    }
+
+
+    increasePlayerMistakes() {
+        this.mistakes++;
+        this.updatePlayerMistakes();
+    }
+
+    increasePlayerScore (){
+        this.success++;
+        this.updatePlayerSuccesses();
+    }
+
+    removeCurrentPlayerStyle(){
+        let playerCard = this.getCard();
+        playerCard.classList.remove(gameClasses.player.playerActive)
+    }
+
+    addCurrentPlayerStyle(){
+        let playerCard = this.getCard();
+        playerCard.classList.add(gameClasses.player.playerActive)
+    }
+
+    setWinnerStyle(){
+        let winnerToken = this.getWinnerToken();
+        winnerToken.classList.remove(gameClasses.player.crownHidden);
+    }
+
+
+    updatePlayerMistakes() {
+        let DOMMistakes = this.getMistakesElement();
+        let mistakes = this.getPlayerMistakes();
+        let defaultText = gameStrings.mistakes;
+        DOMMistakes.textContent = defaultText + mistakes;
+    }
+
+    updatePlayerSuccesses() {
+        let DOMSuccesses = this.getSuccessesElement();
+        let successes = this.getPlayerSuccesses();
+        let defaultText = gameStrings.successes;
+        DOMSuccesses.textContent = defaultText + successes;
+
+    }
+
 }
+
+var currentGame = {};
 
 function initializeGame(){
     resetGameData();
+    currentGame = new Game();
 
     let form = document.getElementById(gameIds.gameProperties.form);
     let gameParameters = parseGamePropertiesForm(form);
+
+    currentGame.hideGameProperties();
+    currentGame.showGameStatus();
     
-    hideGameProperties();
-    showGameStatus();
-    
-    initializePlayers(gameParameters.players);
+    currentGame.initializePlayers(gameParameters.players);
     initializeDeck(gameParameters);
 
 }
 
 function initializeDeck(gameParameters){
-    changeCardAmount(gameParameters.cardAmount);
+    currentGame.setCardAmount(gameParameters.cardAmount);
     createGameDeck(gameParameters);
     flipAllAvailableCards();
     setTimeout(flipAllAvailableCards, 750);
-}
-
-function changeCardAmount(cardAmount){
-
-    gameData.cardAmount = cardAmount;
-}
-
-function appendPlayersInfo(players){
-    let gameStatusContainer = document.getElementById(gameIds.gameInfoIds.container);
-    for (let i=0; i <players.length; i++){
-        let playerCard = players[i].cardStructure.card;
-        gameStatusContainer.appendChild(playerCard);
-    }
-}
-
-function initializePlayers(playersAmount){
-    createPlayersArray(playersAmount);
-    setTimeout(addCurrentPlayerStyle(getCurrentPlayer()), 900);    
-    appendPlayersInfo(getPlayers());
-}
-
-function createPlayersArray(playersAmount){
-    for (let i=0; i < playersAmount; i++){
-        let player = createPlayer(i+1);
-        gameData.players.push(player);
-    }
-}
-
-function createPlayer(i){
-    return {
-        identifier: i,
-        mistakes: 0,
-        success: 0,
-        cardStructure: createPlayerDOMCard(i)    
-    };
-}
-
-function hideGameProperties(){
-    let gameInitializer = document.getElementById(gameIds.gameProperties.id);
-    gameInitializer.classList.add(gameClasses.game.propertiesHidden);
-}
-
-function showGamePropertiesForm(){
-    let gameInitializer = document.getElementById(gameIds.gameProperties.id);
-    gameInitializer.classList.remove(gameClasses.game.propertiesHidden);
-}
-
-function hideGameStatus(){
-    let gameInitializer = document.getElementById(gameIds.gameInfoIds.container);
-    gameInitializer.classList.add(gameClasses.game.statusHidden);
-}
-
-function showGameStatus(){
-    let gameInitializer = document.getElementById(gameIds.gameInfoIds.container);
-    gameInitializer.classList.remove(gameClasses.game.statusHidden);
 }
 
 function getLevelFromString(level){
@@ -200,160 +458,9 @@ function parseGamePropertiesForm(form){
     return gameParameters;
 }
 
-function nextGameState(card){
-    gameData.cards[gameData.currentCard] = card;
-    let currentPlayer = getCurrentPlayer();
-    increaseCurrentCard();
-
-    if (areMaxCardsFlipped()){
-        let isThePlayCorrect = areCurrentCardsTheSame();
-        isThePlayCorrect ? handleCorrectCards(currentPlayer): handleWrongCards(currentPlayer);
-        if (!isThePlayCorrect) { 
-            setTimeout(removeCurrentPlayerStyle(currentPlayer), 1000);
-            handleNextPlayer();
-            setTimeout(addCurrentPlayerStyle(getCurrentPlayer()), 1000);
-        }
-    }
-    
-}
-
-function getPlayerCard(player){
-    return player.cardStructure.card;
-}
-
-function removeCurrentPlayerStyle(currentPlayer){
-    return function (){
-        let playerCard = getPlayerCard(currentPlayer);
-        playerCard.classList.remove(gameClasses.player.playerActive)
-    }
-}
-
-function addCurrentPlayerStyle(currentPlayer){
-    return function (){
-        let playerCard = getPlayerCard(currentPlayer);
-        playerCard.classList.add(gameClasses.player.playerActive)
-    }
-}
-
-function getCurrentPlayer(){
-
-    return gameData.players[gameData.currentPlayer];
-}
-
-function areMaxCardsFlipped(){
-
-    return gameData.currentCard === 0;
-}
-
-function increaseCurrentCard(){
-    let cardAmount = gameData.cardAmount,
-        currentCard = gameData.currentCard;
-
-    gameData.currentCard = (currentCard === cardAmount - 1) ? 0 : currentCard + 1;
-}
-
-function handleCorrectCards(currentPlayer){
-    increasePlayerScore(currentPlayer);
-    updatePlayerSuccesses(currentPlayer);
-    decreaseRemainingCards();
-    updateCorrectCardsChosen();
-    handleGameOver(isGameOver());
-}
-
-function handleWrongCards(currentPlayer){
-    increasePlayerMistakes(currentPlayer);
-    updatePlayerMistakes(currentPlayer);
-    increaseGameMistakes();
-    updateWrongCardsChosen();
-}
-
-function increasePlayerMistakes (player){
-    player.mistakes++;
-}
-
-function increasePlayerScore (player){
-    player.success++;
-}
-
-function updatePlayerMistakes(player){
-    let DOMMistakes = getMistakesElement(player);
-    let mistakes = getPlayerMistakes(player);
-    let defaultText = gameStrings.mistakes;
-    DOMMistakes.textContent = defaultText + mistakes;
-}
-
-function updatePlayerSuccesses(player){
-    let DOMSuccesses = getSuccessesElement(player);
-    let successes = getPlayerSuccesses(player);
-    let defaultText = gameStrings.successes;
-    DOMSuccesses.textContent = defaultText + successes;
-
-}
-
-function getMistakesElement(player){
-    return player.cardStructure.mistakes;
-}
-function getSuccessesElement(player){
-    return player.cardStructure.successes;
-}
-
-function getPlayerMistakes(player){
-    return player.mistakes;
-}
-
-function getPlayerSuccesses(player){
-    return player.success;
-}
-
-
-function handleGameOver(isGameOver){
-    if (!isGameOver){return;}
-    // showGameOver
-    let players = getPlayers();
-    let winner = getWinner(players);
-    updateWinnerStyle(winner);
-    setTimeout(resetGameSpace, 3400);
-    resetGameData();
-
-}
-
-function getPlayers(){
-
-    return gameData.players;
-}
-
-function getWinner(players){
-    return players[0];
-}
-
-function getWinnerToken(winner){
-    return winner.cardStructure.winnerToken;
-}
-
-function updateWinnerStyle(winner){
-    let winnerToken = getWinnerToken(winner);
-    winnerToken.classList.remove(gameClasses.player.crownHidden);
-}
-
-function resetGameSpace(){
-    removeDeck();
-    removePlayerCards();
-    showGamePropertiesForm();
-    hideGameStatus();
-}
-
-function removePlayerCards(){
-    let container = document.getElementById(gameIds.gameInfoIds.container);
-    let children = container.children;
-    let childrenCount = children.length
-    for (let i=0; i < childrenCount; i++){
-        container.removeChild(children[0]);
-    }
-}
-
 function resetGameData(){
 
-    gameData = getDefaultGameData();
+    currentGame = {};
 }
 
 function resetTextById(DOMId){
@@ -361,41 +468,9 @@ function resetTextById(DOMId){
     element.textContent = "";
 }
 
-function isGameOver(){
-
-    return gameData.remainingCards === 0;
-}
-
-function decreaseRemainingCards(){
-
-    gameData.remainingCards = gameData.remainingCards- gameData.cardAmount;
-}
-
-function increaseGameMistakes(){
-
-    gameData.mistakes++;
-}
-
-function updateDOMInfo(){
-    let DOMmistakes = document.getElementById(gameIds.gameInfoIds.mistakes);
-    DOMmistakes.textContent = gameData.mistakes;
-}
-
 function getCardIdentifier(card){
 
     return card.dataset.cardidentifier;
-}
-
-function areCurrentCardsTheSame (){
-    let differenceInCards = 0;
-    const cards = gameData.cards;
-    for (let i=1; i <= gameData.cardAmount - 1; i++){
-        if (getCardIdentifier(cards[i-1]) !== getCardIdentifier(cards[i])){
-            differenceInCards++;
-        }
-    }
-
-    return differenceInCards === 0;
 }
 
 function getCardBackFace(card){
@@ -403,22 +478,26 @@ function getCardBackFace(card){
     return card.lastChild;
 }
 
+// @game
 function updateCorrectCardsChosen(){
     let cardBackFaces = [],
-        cards = gameData.cards;
-    for (let i=0; i < gameData.cardAmount; i++){
+        cards = currentGame.getCards(),
+        cardAmount = currentGame.getCardAmount();
+    for (let i=0; i < cardAmount; i++){
         let backFace = getCardBackFace(cards[i]);
         cardBackFaces.push(backFace);
     }
 
     setTimeout(updateBackFaceStyle(cardBackFaces), 1000);
     disableCurrentCards();
-    removeCurrentCardsInfo();
+    currentGame.removeCurrentCardsInfo();
 }
 
 function disableCurrentCards(){
-    let cards = gameData.cards;
-    for (let i=0; i < gameData.cardAmount; i++){
+    let cards = currentGame.getCards(),
+        cardAmount = currentGame.getCardAmount();
+
+    for (let i=0; i < cardAmount; i++){
         cards[i].removeEventListener("click", startRound);
     }
 }
@@ -431,11 +510,6 @@ function updateBackFaceStyle(cardBackFaces){
     }
 }
 
-function updateWrongCardsChosen(){
-    setTimeout(unflipCurrentCards(gameData.cards), 1000);
-    removeCurrentCardsInfo();
-}
-
 function unflipCurrentCards(cards){
     return function(){
         for (let i=0; i < cards.length; i++){
@@ -444,48 +518,12 @@ function unflipCurrentCards(cards){
     }
 }
 
-function removeCurrentCardsInfo(){
-
-    gameData.cards = [];
-}
-
 function startRound(){
     let isCardAlreadyFliped = !this.classList.contains(gameClasses.card.flippedCard);
     if (isCardAlreadyFliped) {
         this.classList.toggle(gameClasses.card.flippedCard);
-        gameData.cardsFlipped++;
-        nextGameState(this);
+        currentGame.nextGameState(this);
     }
-}
-
-function createPlayerDOMCard(playerNumber){
-    let cardStructure = {};
-    let playerCard = document.createElement("DIV");
-    playerCard.classList.add(gameClasses.player.playerCard);
-
-    let cardTitle = document.createElement("h2");
-    if (gameData.players)
-    cardTitle.textContent = gameStrings.player + playerNumber;
-    playerCard.appendChild(cardTitle);
-
-    let mistakes = document.createElement("p");
-    mistakes.textContent = gameStrings.mistakes + "0";
-    cardStructure.mistakes = mistakes;
-    playerCard.appendChild(mistakes);
-
-    let successes = document.createElement("p");
-    successes.textContent = gameStrings.successes + "0";
-    cardStructure.successes = successes;
-    playerCard.appendChild(successes);
-
-    let winnerCrown = document.createElement("img");
-    winnerCrown.src = gamePaths.crown;
-    winnerCrown.classList.add(gameClasses.player.crown, gameClasses.player.crownHidden);
-    cardStructure.winnerToken = winnerCrown;
-    playerCard.appendChild(winnerCrown);
-
-    cardStructure.card = playerCard;
-    return cardStructure;
 }
 
 function createCard(cardProperties){
@@ -575,7 +613,8 @@ function createGameDeck(gameProperties){
         }
         k++;
     }
-    gameData.remainingCards = gameDeck.length;
+
+    currentGame.setRemainingCards(gameDeck.length);
 
     gameDeck = shuffleArray(gameDeck);
 
@@ -606,12 +645,6 @@ function appendGameDeckToDom(gameDeck, gameSpace){
 function createUnorderedIndicesArray(size){
     let orderedArray = generateOrderedIntArray(size);
     return shuffleArray(orderedArray);
-}
-
-
-function removeDeck(){
-    let DOMdeck = document.getElementById(gameIds.cardContainersIds.cardDeck);
-    DOMdeck.remove();    
 }
 
 function generateOrderedIntArray(size){
@@ -654,11 +687,13 @@ function isCardPlayerFlipped(card){
     }
 }
 
+// @ colocar na classe
 function isCardInGameData(card){
     let isCardInList = false,
-        cards = gameData.cards,
+        cards = currentGame.getCards(),
+        cardAmount = currentGame.getCardAmount(),
         i=0;
-    while (i < gameData.cardAmount && !isCardInList){
+    while (i < cardAmount && !isCardInList){
         cards[i] === card ? isCardInList = true : i++;
     }
 
