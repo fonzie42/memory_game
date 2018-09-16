@@ -86,7 +86,6 @@ class Game {
         this.currentPlayer = 0;
     }
 
-
     getCurrentPlayer(){
         return this.players[this.currentPlayer];
     }
@@ -189,12 +188,13 @@ class Game {
         let currentPlayer = this.getCurrentPlayer();
         currentPlayer.increasePlayerScore();
         this.decreaseRemainingCards();
-        updateCorrectCardsChosen();
+        this.updateCorrectCardsChosen();
         this.handleGameOver(this.isGameOver());
     }
 
     updateWrongCardsChosen(){
-        setTimeout(unflipCurrentCards(this.getCards()), 1000);
+        let cards = this.getCards();
+        setTimeout(this.unflipCurrentCards.bind(null, cards), 1000);
         this.removeCurrentCardsInfo();
     }
 
@@ -306,8 +306,8 @@ class Game {
             cardBackFaces.push(backFace);
         }
 
-        setTimeout(updateBackFaceStyle(cardBackFaces), 1000);
-        disableCurrentCards();
+        setTimeout(this.updateBackFaceStyle.bind(null, cardBackFaces), 1000);
+        this.disableCurrentCards();
         this.removeCurrentCardsInfo();
     }
 
@@ -318,6 +318,30 @@ class Game {
         for (let i=0; i < cardAmount; i++){
             cards[i].removeEventListener("click", startRound);
         }
+    }
+
+    updateBackFaceStyle(cardBackFaces){
+        for (let i=0; i < cardBackFaces.length; i++){
+            cardBackFaces[i].classList.add(gameClasses.cardFace.disabledCard);
+        }
+    }
+
+    unflipCurrentCards(cards){
+        for (let i=0; i < cards.length; i++){
+            cards[i].classList.toggle(gameClasses.card.flippedCard);
+        }
+    }
+
+    isCardInGameData(card){
+        let isCardInList = false,
+            cards = this.getCards(),
+            cardAmount = this.getCardAmount(),
+            i=0;
+        while (i < cardAmount && !isCardInList){
+            cards[i] === card ? isCardInList = true : i++;
+        }
+
+        return isCardInList;
     }
 }
 
@@ -435,7 +459,6 @@ class Player{
         DOMSuccesses.textContent = defaultText + successes;
 
     }
-
 }
 
 var currentGame = {};
@@ -475,6 +498,7 @@ function getDeckFromName(deckName){
 }
 
 function getCardAmountFromString(cardAmountText){
+
     return cardAmountText != '' ? gameDefaultProperties.cardAmountModifier[cardAmountText] : gameDefaultProperties.cardAmountModifier.regular;
 }
 
@@ -494,37 +518,6 @@ function resetGameData(){
     currentGame = {};
 }
 
-function resetTextById(DOMId){
-    let element = document.getElementById(DOMId);
-    element.textContent = "";
-}
-
-function getCardIdentifier(card){
-
-    return card.dataset.cardidentifier;
-}
-
-function getCardBackFace(card){
-
-    return card.lastChild;
-}
-
-function updateBackFaceStyle(cardBackFaces){
-    return function (){
-        for (let i=0; i < cardBackFaces.length; i++){
-            cardBackFaces[i].classList.add(gameClasses.cardFace.disabledCard);
-        }
-    }
-}
-
-function unflipCurrentCards(cards){
-    return function(){
-        for (let i=0; i < cards.length; i++){
-            cards[i].classList.toggle(gameClasses.card.flippedCard);
-        }
-    }
-}
-
 function startRound(){
     let isCardAlreadyFliped = !this.classList.contains(gameClasses.card.flippedCard);
     if (isCardAlreadyFliped) {
@@ -533,56 +526,8 @@ function startRound(){
     }
 }
 
-function createCard(cardProperties){
-    //@TODO IMPROVE
-    let card = document.createElement("DIV");
-    card.classList.add(gameClasses.card.card);    
-    card.setAttribute("data-cardidentifier",cardProperties.cardIdentifier);
-    card.addEventListener('click', startRound);  
-    
-    let cardFront = createFrontFace();
-    card.appendChild(cardFront);
-    
-    let cardBack = createBackFace(cardProperties);
-    card.appendChild(cardBack);
-    
-    return card;
-}
 
-function createFrontFace(){
-    let frontFace = document.createElement("DIV");
-    frontFace.classList.add(gameClasses.cardFace.cardFace);
-    frontFace.classList.add(gameClasses.cardFace.front);
-    frontFace.classList.add(gameClasses.cardFace.frontStandardImg);
-    frontFace.classList.add(gameClasses.cardFace.backStandardBg);
-    return frontFace;
-}
 
-function createBackFace(cardProperties){
-    //@TODO IMPROVE
-    let backFace = document.createElement("DIV");
-
-    backFace.classList.add(gameClasses.cardFace.cardFace);
-    backFace.classList.add(gameClasses.cardFace.back);
-    let backgroundColor = gameClasses.cardFace.backgroundPrefix + cardProperties.backgroundColor;
-    backFace.classList.add(backgroundColor)
-    backFace.appendChild(createBackFaceImage(cardProperties));
-
-    let cardTitle = document.createElement("P");
-    let titleColor = gameClasses.card.cardTitlePrefix + cardProperties.backgroundColor;
-    cardTitle.classList.add(gameClasses.card.cardTitle);
-    cardTitle.classList.add(titleColor);
-    cardTitle.textContent = cardProperties.cardTitle;
-
-    backFace.appendChild(cardTitle);
-    return backFace;
-}
-
-function createBackFaceImage(cardProperties){
-    let backFaceImage = document.createElement("IMG");
-    backFaceImage.src=cardProperties.image;
-    return backFaceImage;
-}
 
 function getDOMDeck(){
     const DOMdeck = document.getElementById(gameIds.cardContainersIds.cardDeck);
@@ -675,6 +620,91 @@ function shuffleArray(array){
     return array;
 }
 
+function flipAllAvailableCards(){
+    let cards = document.getElementsByClassName(gameClasses.card.card);
+    for (let i = 0; i < cards.length; i++) {
+        if (!isCardDisabled(cards[i]) && !isCardPlayerFlipped(cards[i])){
+          cards[i].classList.toggle(gameClasses.card.flippedCard);    
+        }
+    }
+}
+
+function isCardPlayerFlipped(card){
+    if (card == undefined){
+        return undefined;
+    } else {
+        let isCardFlipped = card.classList.contains(gameClasses.card.flippedCard),
+            isInCurrentCardsList = currentGame.isCardInGameData(card);
+        return (isCardFlipped && isInCurrentCardsList);
+    }
+}
+
+
+
+
+
+
+function getCardIdentifier(card){
+
+    return card.dataset.cardidentifier;
+}
+
+function getCardBackFace(card){
+
+    return card.lastChild;
+}
+
+function createCard(cardProperties){
+    //@TODO IMPROVE
+    let card = document.createElement("DIV");
+    card.classList.add(gameClasses.card.card);    
+    card.setAttribute("data-cardidentifier",cardProperties.cardIdentifier);
+    card.addEventListener('click', startRound);  
+    
+    let cardFront = createFrontFace();
+    card.appendChild(cardFront);
+    
+    let cardBack = createBackFace(cardProperties);
+    card.appendChild(cardBack);
+    
+    return card;
+}
+
+function createFrontFace(){
+    let frontFace = document.createElement("DIV");
+    frontFace.classList.add(gameClasses.cardFace.cardFace);
+    frontFace.classList.add(gameClasses.cardFace.front);
+    frontFace.classList.add(gameClasses.cardFace.frontStandardImg);
+    frontFace.classList.add(gameClasses.cardFace.backStandardBg);
+    return frontFace;
+}
+
+function createBackFace(cardProperties){
+    //@TODO IMPROVE
+    let backFace = document.createElement("DIV");
+
+    backFace.classList.add(gameClasses.cardFace.cardFace);
+    backFace.classList.add(gameClasses.cardFace.back);
+    let backgroundColor = gameClasses.cardFace.backgroundPrefix + cardProperties.backgroundColor;
+    backFace.classList.add(backgroundColor)
+    backFace.appendChild(createBackFaceImage(cardProperties));
+
+    let cardTitle = document.createElement("P");
+    let titleColor = gameClasses.card.cardTitlePrefix + cardProperties.backgroundColor;
+    cardTitle.classList.add(gameClasses.card.cardTitle);
+    cardTitle.classList.add(titleColor);
+    cardTitle.textContent = cardProperties.cardTitle;
+
+    backFace.appendChild(cardTitle);
+    return backFace;
+}
+
+function createBackFaceImage(cardProperties){
+    let backFaceImage = document.createElement("IMG");
+    backFaceImage.src=cardProperties.image;
+    return backFaceImage;
+}
+
 function isCardDisabled(card){
     if (card == undefined){
         return undefined;
@@ -684,34 +714,3 @@ function isCardDisabled(card){
     }
 }
 
-function isCardPlayerFlipped(card){
-    if (card == undefined){
-        return undefined;
-    } else {
-        let isCardFlipped = card.classList.contains(gameClasses.card.flippedCard),
-            isInCurrentCardsList = isCardInGameData(card);
-        return (isCardFlipped && isInCurrentCardsList);
-    }
-}
-
-// @ colocar na classe
-function isCardInGameData(card){
-    let isCardInList = false,
-        cards = currentGame.getCards(),
-        cardAmount = currentGame.getCardAmount(),
-        i=0;
-    while (i < cardAmount && !isCardInList){
-        cards[i] === card ? isCardInList = true : i++;
-    }
-
-    return isCardInList;
-}
-
-function flipAllAvailableCards(){
-    let cards = document.getElementsByClassName(gameClasses.card.card);
-    for (let i = 0; i < cards.length; i++) {
-        if (!isCardDisabled(cards[i]) && !isCardPlayerFlipped(cards[i])){
-          cards[i].classList.toggle(gameClasses.card.flippedCard);    
-        }
-    }
-}
