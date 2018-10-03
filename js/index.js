@@ -1,77 +1,76 @@
-const gameDefaultProperties = {
-    levelDeckSize: {
-        easy: 6,
-        regular: 10,
-        hard: 15
+const DEFAULT_PROPERTIES = {
+    LEVEL_DECK_SIZE: {
+        EASY: 6,
+        REGULAR: 10,
+        HARD: 15
     },
 
-    cardAmountModifier: {
-        regular: 2,
-        hard: 3,
-        veryHard: 4
+    CARD_AMOUNT_MODIFIER: {
+        REGULAR: 2,
+        HARD: 3,
+        VERYHARD: 4
     },
 
-    standardPlayers: 1
+    STANDARDPLAYERS: 1
 };
 
-const gameIds = {
-    gameInfoIds: {
-        container: "gamestatuscontainer",
-        remainingCards: "remainingCardsInfo", 
-        mistakes: "mistakesInfo"
+const IDS = {
+    INFO: {
+        CONTAINER: "gamestatuscontainer"
     },
 
-    gameProperties: {
-        id: "gamePropertiesContainer",
-        form: "gamePropertiesForm",
+    GAME_PROPERTIES: {
+        ID: "gamePropertiesContainer",
+        FORM: "gamePropertiesForm",
     },
 
-    cardContainersIds:{
-        cardDeck: "cardDeck",
-        cardTable: "cardTable",
+    CARD_CONTAINERS:{
+        DECK: "cardDeck",
+        TABLE: "cardTable",
     }
 };
 
-const gameClasses = {
-    game: {
-        propertiesHidden: "gameProperties--hidden",
-        statusHidden: "gameStatus--hidden",
-        deck: "deck",
+const CLASSES = {
+    GAME: {
+        PROPERTIES_HIDDEN: "gameProperties--hidden",
+        STATUS_HIDDEN: "gameStatus--hidden",
+        DECK: "deck",
     },
 
-    player: {
-        playerCard: "playerCard",
-        playerActive: "playerCard--active",
-        crown: "crown",
-        crownHidden: "crown--hidden"
+    PLAYER: {
+        CARD: "playerCard",
+        ACTIVE: "playerCard--active",
+        CROWN: "crown",
+        CROWN_HIDDEN: "crown--hidden"
     },
 
-    card: {
-        card: "card",
-        cardTitle: "card__title",
-        cardTitlePrefix: "card__title--",
-        flippedCard: "flippedCard"
+    CARD: {
+        CARD: "card",
+        TITLE: "card__title",
+        TITLE_PREFIX: "card__title--",
+        FLIPPED: "flippedCard"
     },
 
-    cardFace: {
-        disabledCard: "card__face--disabled",
-        cardFace: "card__face",
-        front: "card__face--front",
-        frontStandardImg: "card__face--backgroundStandard",
-        backgroundPrefix: "card__face--background",
-        backStandardBg: "card__face--backgroundGray",
-        back: "card__face--back"
+    CARD_FACE: {
+        DISABLED_CARD: "card__face--disabled",
+        FACE: "card__face",
+        FRONT: "card__face--front",
+        FRONT_STANDARD_IMG: "card__face--backgroundStandard",
+        BACKGROUND_PREFIX: "card__face--background",
+        BACK_STANDARD_BG: "card__face--backgroundGray",
+        BACK: "card__face--back"
     },
 };
 
-const gameStrings = {
-    player: "Player ",
-    mistakes: "Mistakes: ",
-    successes: "Successes: "
+const STRINGS = {
+    PLAYER: "Player ",
+    MISTAKES: "Mistakes: ",
+    SUCCESSES: "Successes: "
 };
 
-const gamePaths = {
-    crown: "images/assets/crown.svg"
+const GAME_PATHS = {
+
+    CROWN: "images/assets/crown.svg"
 }
 
 class Game {
@@ -221,12 +220,12 @@ class Game {
     }
 
     removeDeck(){
-        let DOMdeck = document.getElementById(gameIds.cardContainersIds.cardDeck);
+        let DOMdeck = document.getElementById(IDS.CARD_CONTAINERS.DECK);
         DOMdeck.remove();    
     }
 
     removePlayersCards(){
-        let container = document.getElementById(gameIds.gameInfoIds.container);
+        let container = document.getElementById(IDS.INFO.CONTAINER);
         let children = container.children;
         let childrenCount = children.length
         for (let i=0; i < childrenCount; i++){
@@ -235,23 +234,23 @@ class Game {
     }
 
     hideGameProperties(){
-        let gameInitializer = document.getElementById(gameIds.gameProperties.id);
-        gameInitializer.classList.add(gameClasses.game.propertiesHidden);
+        let gameInitializer = document.getElementById(IDS.GAME_PROPERTIES.ID);
+        gameInitializer.classList.add(CLASSES.GAME.PROPERTIES_HIDDEN);
     }
 
     showGamePropertiesForm(){
-        let gameInitializer = document.getElementById(gameIds.gameProperties.id);
-        gameInitializer.classList.remove(gameClasses.game.propertiesHidden);
+        let gameInitializer = document.getElementById(IDS.GAME_PROPERTIES.ID);
+        gameInitializer.classList.remove(CLASSES.GAME.PROPERTIES_HIDDEN);
     }
 
     hideGameStatus(){
-        let gameInitializer = document.getElementById(gameIds.gameInfoIds.container);
-        gameInitializer.classList.add(gameClasses.game.statusHidden);
+        let gameInitializer = document.getElementById(IDS.INFO.CONTAINER);
+        gameInitializer.classList.add(CLASSES.GAME.STATUS_HIDDEN);
     }
 
     showGameStatus(){
-        let gameInitializer = document.getElementById(gameIds.gameInfoIds.container);
-        gameInitializer.classList.remove(gameClasses.game.statusHidden);
+        let gameInitializer = document.getElementById(IDS.INFO.CONTAINER);
+        gameInitializer.classList.remove(CLASSES.GAME.STATUS_HIDDEN);
     }
 
     initializePlayers(playersAmount){
@@ -262,7 +261,7 @@ class Game {
     }
 
     appendPlayersInfo(players){
-        let gameStatusContainer = document.getElementById(gameIds.gameInfoIds.container);
+        let gameStatusContainer = document.getElementById(IDS.INFO.CONTAINER);
         for (let i=0; i <players.length; i++){
             let playerCard = players[i].getCard();
             gameStatusContainer.appendChild(playerCard);
@@ -323,7 +322,7 @@ class Game {
 
     updateBackFaceStyle(cardBackFaces){
         for (let i=0; i < cardBackFaces.length; i++){
-            cardBackFaces[i].classList.add(gameClasses.cardFace.disabledCard);
+            cardBackFaces[i].classList.add(CLASSES.CARD_FACE.DISABLED_CARD);
         }
     }
 
@@ -348,7 +347,7 @@ class Game {
 
     isCardPlayerFlipped(card){
         let DOMCard = card.getDOMElement(),
-            isCardFlipped = DOMCard.classList.contains(gameClasses.card.flippedCard),
+            isCardFlipped = DOMCard.classList.contains(CLASSES.CARD.FLIPPED),
             isInCurrentCardsList = this.isCardInGameData(card);
         return (isCardFlipped && isInCurrentCardsList);
     }
@@ -395,29 +394,29 @@ class Player{
 
     createMistakesElement(){
         let mistakes = document.createElement("p");
-        mistakes.textContent = gameStrings.mistakes + "0";
+        mistakes.textContent = STRINGS.MISTAKES + "0";
         return mistakes;
     }
 
     createSuccessesElement(){
         let successes = document.createElement("p");
-        successes.textContent = gameStrings.successes + "0";
+        successes.textContent = STRINGS.SUCCESSES + "0";
         return successes;
     }
 
     createWinnerToken(){
         let winnerCrown = document.createElement("img");
-        winnerCrown.src = gamePaths.crown;
-        winnerCrown.classList.add(gameClasses.player.crown, gameClasses.player.crownHidden);
+        winnerCrown.src = GAME_PATHS.CROWN;
+        winnerCrown.classList.add(CLASSES.PLAYER.CROWN, CLASSES.PLAYER.CROWN_HIDDEN);
         return winnerCrown;
     }
 
     createPlayerCard(){
         let playerCard = document.createElement("DIV");
-        playerCard.classList.add(gameClasses.player.playerCard);
+        playerCard.classList.add(CLASSES.PLAYER.CARD);
 
         let cardTitle = document.createElement("h2");
-        cardTitle.textContent = gameStrings.player + this.getIdentifier();
+        cardTitle.textContent = STRINGS.PLAYER + this.getIdentifier();
         
         playerCard.appendChild(cardTitle);
         playerCard.appendChild(this.getMistakesElement());   
@@ -440,31 +439,31 @@ class Player{
 
     removeCurrentPlayerStyle(){
         let playerCard = this.getCard();
-        playerCard.classList.remove(gameClasses.player.playerActive)
+        playerCard.classList.remove(CLASSES.PLAYER.ACTIVE)
     }
 
     addCurrentPlayerStyle(){
         let playerCard = this.getCard();
-        playerCard.classList.add(gameClasses.player.playerActive)
+        playerCard.classList.add(CLASSES.PLAYER.ACTIVE)
     }
 
     setWinnerStyle(){
         let winnerToken = this.getWinnerToken();
-        winnerToken.classList.remove(gameClasses.player.crownHidden);
+        winnerToken.classList.remove(CLASSES.PLAYER.CROWN_HIDDEN);
     }
 
 
     updatePlayerMistakes() {
         let DOMMistakes = this.getMistakesElement();
         let mistakes = this.getPlayerMistakes();
-        let defaultText = gameStrings.mistakes;
+        let defaultText = STRINGS.MISTAKES;
         DOMMistakes.textContent = defaultText + mistakes;
     }
 
     updatePlayerSuccesses() {
         let DOMSuccesses = this.getSuccessesElement();
         let successes = this.getPlayerSuccesses();
-        let defaultText = gameStrings.successes;
+        let defaultText = STRINGS.SUCCESSES;
         DOMSuccesses.textContent = defaultText + successes;
 
     }
@@ -504,7 +503,7 @@ class Card {
 
     createCardElement(){
         let card = document.createElement("DIV");
-        card.classList.add(gameClasses.card.card);
+        card.classList.add(CLASSES.CARD.CARD);
         card.addEventListener('click', startRound.bind(null, this));
         card.appendChild(this.getCardFrontFace());
         card.appendChild(this.getCardBackFace());
@@ -513,25 +512,25 @@ class Card {
 
     createFrontFace(){
         let frontFace = document.createElement("DIV");
-        frontFace.classList.add(gameClasses.cardFace.cardFace);
-        frontFace.classList.add(gameClasses.cardFace.front);
-        frontFace.classList.add(gameClasses.cardFace.frontStandardImg);
-        frontFace.classList.add(gameClasses.cardFace.backStandardBg);
+        frontFace.classList.add(CLASSES.CARD_FACE.FACE);
+        frontFace.classList.add(CLASSES.CARD_FACE.FRONT);
+        frontFace.classList.add(CLASSES.CARD_FACE.FRONT_STANDARD_IMG);
+        frontFace.classList.add(CLASSES.CARD_FACE.BACK_STANDARD_BG);
         return frontFace;
     }
 
     createBackFace(cardProperties){
         let backFace = document.createElement("DIV");
 
-        backFace.classList.add(gameClasses.cardFace.cardFace);
-        backFace.classList.add(gameClasses.cardFace.back);
-        let backgroundColor = gameClasses.cardFace.backgroundPrefix + cardProperties.backgroundColor;
+        backFace.classList.add(CLASSES.CARD_FACE.FACE);
+        backFace.classList.add(CLASSES.CARD_FACE.BACK);
+        let backgroundColor = CLASSES.CARD_FACE.BACKGROUND_PREFIX + cardProperties.backgroundColor;
         backFace.classList.add(backgroundColor)
         backFace.appendChild(this.createBackFaceImage(cardProperties.image));
 
         let cardTitle = document.createElement("P");
-        let titleColor = gameClasses.card.cardTitlePrefix + cardProperties.backgroundColor;
-        cardTitle.classList.add(gameClasses.card.cardTitle);
+        let titleColor = CLASSES.CARD.TITLE_PREFIX + cardProperties.backgroundColor;
+        cardTitle.classList.add(CLASSES.CARD.TITLE);
         cardTitle.classList.add(titleColor);
         cardTitle.textContent = cardProperties.cardTitle;
 
@@ -547,11 +546,11 @@ class Card {
 
     isCardDisabled(){
         let backFace = this.getCardBackFace();
-        return backFace.classList.contains(gameClasses.cardFace.disabledCard);
+        return backFace.classList.contains(CLASSES.CARD_FACE.DISABLED_CARD);
     }
 
     flip(){
-        this.cardElement.classList.toggle(gameClasses.card.flippedCard);
+        this.cardElement.classList.toggle(CLASSES.CARD.FLIPPED);
     }
 }
 
@@ -560,7 +559,7 @@ var globalDeck = [];
 
 function initializeGame(){
     resetGameData();
-    let form = document.getElementById(gameIds.gameProperties.form);
+    let form = document.getElementById(IDS.GAME_PROPERTIES.FORM);
     let gameParameters = parseGamePropertiesForm(form);
 
     currentGame = new Game();
@@ -579,12 +578,12 @@ function initializeDeck(gameParameters){
 
 function getLevelFromString(level){
 
-    return !level || typeof level !== "string" ? gameDefaultProperties.levelDeckSize.regular : parseInt(level);
+    return !level || typeof level !== "string" ? DEFAULT_PROPERTIES.LEVEL_DECK_SIZE.REGULAR : DEFAULT_PROPERTIES.LEVEL_DECK_SIZE[level];
 }
 
 function getPlayersFromString(player){
 
-    return !player || typeof player !== "string" ? gameDefaultProperties.standardPlayers : parseInt(player);
+    return !player || typeof player !== "string" ? DEFAULT_PROPERTIES.STANDARDPLAYERS : parseInt(player);
 }
 
 function getDeckFromName(deckName){
@@ -594,7 +593,7 @@ function getDeckFromName(deckName){
 
 function getCardAmountFromString(cardAmountText){
 
-    return cardAmountText != '' ? gameDefaultProperties.cardAmountModifier[cardAmountText] : gameDefaultProperties.cardAmountModifier.regular;
+    return cardAmountText != '' ? DEFAULT_PROPERTIES.CARD_AMOUNT_MODIFIER[cardAmountText] : DEFAULT_PROPERTIES.CARD_AMOUNT_MODIFIER.REGULAR;
 }
 
 function parseGamePropertiesForm(form){
@@ -614,7 +613,7 @@ function resetGameData(){
 }
 
 function startRound(card){
-    let isCardAlreadyFliped = !card.cardElement.classList.contains(gameClasses.card.flippedCard);
+    let isCardAlreadyFliped = !card.cardElement.classList.contains(CLASSES.CARD.FLIPPED);
     if (isCardAlreadyFliped) {
         card.flip();
         currentGame.nextGameState(card);
@@ -622,7 +621,7 @@ function startRound(card){
 }
 
 function getDOMDeck(){
-    const DOMdeck = document.getElementById(gameIds.cardContainersIds.cardDeck);
+    const DOMdeck = document.getElementById(IDS.CARD_CONTAINERS.DECK);
 
     if (DOMdeck != undefined){
         removeDeck();
@@ -632,10 +631,10 @@ function getDOMDeck(){
 }
 
 function createDOMDeck(){
-    let DOMTable = document.getElementById(gameIds.cardContainersIds.cardTable);
+    let DOMTable = document.getElementById(IDS.CARD_CONTAINERS.TABLE);
     let DOMdeck = document.createElement("DIV");
-    DOMdeck.classList.add(gameClasses.game.deck);
-    DOMdeck.id = gameIds.cardContainersIds.cardDeck;    
+    DOMdeck.classList.add(CLASSES.GAME.DECK);
+    DOMdeck.id = IDS.CARD_CONTAINERS.DECK;    
     DOMTable.appendChild(DOMdeck);
     return DOMdeck;
 }
