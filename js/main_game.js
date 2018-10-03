@@ -101,6 +101,10 @@ class Game {
         return this.cardAmount;
     }
 
+    getCurrentCard(){
+        return this.currentCard;
+    }
+
     getWinner(){
         let players = this.getPlayers(),
             winner = players[0];
@@ -125,7 +129,7 @@ class Game {
     }
 
     addCard(card){
-        this.cards[this.currentCard] = card;
+        this.cards[this.getCurrentCard()] = card;
         this.increaseCurrentCard();
     }
 
@@ -154,8 +158,8 @@ class Game {
     }
 
     increaseCurrentCard(){
-        let cardAmount = this.cardAmount,
-            currentCard = this.currentCard;
+        let cardAmount = this.getCardAmount(),
+            currentCard = this.getCurrentCard();
 
         this.currentCard = (currentCard === cardAmount - 1) ? 0 : currentCard + 1;
     }
@@ -169,7 +173,7 @@ class Game {
     }
 
     decreaseRemainingCards(){
-        this.remainingCards = this.remainingCards - this.cardAmount;
+        this.remainingCards = this.remainingCards - this.getCardAmount();
     }
 
     removeCurrentCardsInfo(){
@@ -474,7 +478,7 @@ class Card {
         this.cardBackFace = this.createBackFace(cardProperties);
         this.cardFrontFace = this.createFrontFace();
         this.cardElement = this.createCardElement();
-        this.cardIdentifier = cardProperties.cardIdentifier;
+        this.cardIdentifier = this.createCardIdentifier(cardProperties.cardIdentifier);
     }
 
     getCardIdentifier(){
@@ -496,7 +500,7 @@ class Card {
         return this.cardElement;
     }
 
-    setCardIdentifier(identifier){
+    createCardIdentifier(identifier){
 
         this.cardIdentifier = identifier;
     }
@@ -550,7 +554,8 @@ class Card {
     }
 
     flip(){
-        this.cardElement.classList.toggle(CLASSES.CARD.FLIPPED);
+        let DOMCard = this.getDOMElement();
+        DOMCard.classList.toggle(CLASSES.CARD.FLIPPED);
     }
 }
 
